@@ -285,8 +285,8 @@ div.wheel{pointer-events:none}
 .wheel[data-s=tighten] .crew{animation:crewIn .62s cubic-bezier(.3,.8,.3,1) forwards}
 .wheel[data-s=done] .crew{animation:crewOut .42s ease-in forwards}
 .wheel[data-s=tighten] .held{animation:heldA .62s steps(1,end) forwards}
-@keyframes crewIn{0%{transform:translateX(-150px);opacity:0}18%{opacity:1}42%{transform:translateX(-84px);opacity:1}100%{transform:translateX(-52px);opacity:1}}
-@keyframes crewOut{0%{transform:translateX(-52px);opacity:1}100%{transform:translateX(-150px);opacity:0}}
+@keyframes crewIn{0%{transform:translateX(-94px);opacity:0}18%{opacity:1}42%{transform:translateX(-52px);opacity:1}100%{transform:translateX(-32px);opacity:1}}
+@keyframes crewOut{0%{transform:translateX(-32px);opacity:1}100%{transform:translateX(-94px);opacity:0}}
 @keyframes heldA{0%,40%{opacity:0}41%,80%{opacity:1}81%,100%{opacity:0}}
 .tyre-n{fill:#06080e;stroke:#34406a;stroke-width:3}
 .tread{stroke:#1c2133;stroke-width:5;fill:none}.band{fill:var(--accent);opacity:.95}
@@ -301,7 +301,7 @@ div.wheel{pointer-events:none}
 .wheel[data-s=done] .w-nut{transform:rotate(-360deg)}
 @keyframes seat{0%{opacity:0;transform:scale(1.45) rotate(-40deg)}35%{opacity:1;transform:scale(.9)}65%{transform:scale(1.05)}100%{opacity:1;transform:none}}
 .wheel[data-s=tighten] .w-new,.wheel[data-s=done] .w-new{opacity:1;transform:none;transition:none;animation:seat .42s cubic-bezier(.3,.7,.3,1) .5s backwards}
-@keyframes crewWork{0%,100%{transform:translate(-52px,0)}50%{transform:translate(-52px,1.6px)}}
+@keyframes crewWork{0%,100%{transform:translate(-32px,0)}50%{transform:translate(-32px,1px)}}
 .wheel[data-s=tighten] .crew{animation:crewIn .62s cubic-bezier(.3,.8,.3,1) forwards,crewWork .1s linear .62s infinite}
 /* flat grey pit lane like the reference */
 #stage{background:#c4c9d0 !important}
@@ -471,12 +471,10 @@ legend{font:700 14px/1.2 var(--f-text);color:var(--ink2);margin-bottom:8px;paddi
    PIT BOX v2: landscape, top-down, car nose right (artwork-faithful),
    Sakhir scene, clean game layout for phone and desktop
    ===================================================================== */
-#stage{width:min(100cqw,110cqh);height:auto;aspect-ratio:440/400;background:#bcbcc0 !important}
-.wheel,.float{width:22.73%}
-.wheel{height:25%}
-.wheel::after{left:-6px;right:-6px}
-.wheel.wl::after{top:-88px;bottom:50%}
-.wheel.wr::after{top:50%;bottom:-88px}
+#stage{width:auto;height:min(100cqh,125cqw,540px);aspect-ratio:360/447;background:#bcbcc0 !important}
+.wheel,.float{width:20%}
+.wheel{height:16.1%}
+.pitbox g{display:inline}
 .pitbox{z-index:0}
 .tyre-n{fill:#161618;stroke:#3c3c40}
 .tread{stroke:#8d8d93;stroke-width:4;stroke-dasharray:none}
@@ -486,8 +484,6 @@ legend{font:700 14px/1.2 var(--f-text);color:var(--ink2);margin-bottom:8px;paddi
 .crew .c-suit,.crew .c-arm{fill:#d93b2c}.crew .c-str{stroke:#4a4a50}.crew .c-glove{fill:#6b4a5a}
 .crew .c-helm{fill:#e14733;stroke:#8c231a;stroke-width:1.5}.crew .c-band{fill:#4a4a50}
 .held rect{fill:#161618;stroke:#8d8d93}.held .hb{fill:#8d8d93}
-#streaks{left:-30%;right:auto;width:160%;top:0;height:100%;
-  background:repeating-linear-gradient(0deg,transparent 0 14px,rgb(255 255 255 / .38) 14px 16px,transparent 16px 31px,rgb(255 255 255 / .2) 31px 33px)}
 
 /* HUD: label no longer collides with the badge outline */
 .badge{padding:15px 20px 14px}
@@ -520,7 +516,7 @@ legend{font:700 14px/1.2 var(--f-text);color:var(--ink2);margin-bottom:8px;paddi
   #hud{display:contents}
   .b-timer{grid-column:1;grid-row:1;justify-self:end;margin-top:16px}
   .hud-right{grid-column:3;grid-row:1;justify-self:start;align-items:flex-start;margin-top:16px}
-  #stageWrap{grid-column:2;grid-row:1;width:min(62vw,calc((100vh - 330px) * 1.1))}
+  #stageWrap{grid-column:2;grid-row:1;width:min(60vw,calc((100vh - 330px) * .805),435px)}
   #foot{grid-column:1/-1;grid-row:2}
 }
 
@@ -955,60 +951,56 @@ const todayBoard = () => { const d = dayKey(); return allScores().filter(s => s.
    BUILD STATIC MARKUP (car, wheels, lamps, pips, chips)
    ===================================================================== */
 const WHEELS = [
-  { cx: 315, cy: 138, dir: -1, key: 'w_fl' },
-  { cx: 315, cy: 262, dir:  1, key: 'w_fr' },
-  { cx: 100, cy: 262, dir:  1, key: 'w_rr' },
-  { cx: 100, cy: 138, dir: -1, key: 'w_rl' }
+  { cx: 130, cy: 130, dir: -1, key: 'w_fl' },
+  { cx: 231, cy: 130, dir:  1, key: 'w_fr' },
+  { cx: 224, cy: 346, dir:  1, key: 'w_rr' },
+  { cx: 135, cy: 346, dir: -1, key: 'w_rl' }
 ];
 const spokes = cls => { let p = ''; for (let k = 0; k < 5; k++) { const a = (k * 72 - 90) * Math.PI / 180; p += 'M' + (10 * Math.cos(a)).toFixed(1) + ' ' + (10 * Math.sin(a)).toFixed(1) + 'L' + (30 * Math.cos(a)).toFixed(1) + ' ' + (30 * Math.sin(a)).toFixed(1); } return '<path class="' + cls + '" d="' + p + '"/>'; };
 const HEX = (() => { const p = []; for (let k = 0; k < 6; k++) { const a = k * 60 * Math.PI / 180; p.push((9 * Math.cos(a)).toFixed(1) + ',' + (9 * Math.sin(a)).toFixed(1)); } return p.join(' '); })();
 const wheelSVG = dir => `<svg viewBox="-55 -55 110 110" aria-hidden="true" focusable="false"><defs><clipPath id="tyClip"><rect x="-33" y="-50" width="66" height="100" rx="14"/></clipPath></defs>
+<rect class="w-ring" x="-40" y="-56" width="80" height="112" rx="26"/>
 <g class="w-axle"><rect x="-8" y="-24" width="16" height="48" rx="7"/><circle class="ax-hub" r="9"/></g>
-<g class="mir" transform="rotate(90)"><rect class="w-ring" x="-40" y="-56" width="80" height="112" rx="26"/>
 <g class="mir" transform="scale(${dir < 0 ? 1 : -1} 1)">
 <g transform="translate(-78 0)"><ellipse class="fl-sh" cx="4" cy="6" rx="33" ry="33"/><circle class="floor-glow" r="44"/>
 <g class="floor-tyre"><circle class="fl-tyre" r="33"/><circle class="fl-rim" r="20"/><circle class="fl-band" r="20"/><path class="fl-spk" d="M0 -17V17M-17 0H17M-12 -12L12 12M12 -12L-12 12"/><circle class="fl-hub" r="5"/><path class="fl-hi" d="M-25 -17A30 30 0 0 1 -8 -29"/></g></g>
 </g>
 <g class="w-new"><rect class="tyre-n" x="-33" y="-50" width="66" height="100" rx="14"/><g clip-path="url(#tyClip)"><path class="tread" d="M-18 -70V70M0 -70V70M18 -70V70" stroke-dasharray="10 10"/></g><rect class="band" x="-33" y="-50" width="66" height="12" rx="6"/><rect class="band" x="-33" y="38" width="66" height="12" rx="6"/><rect class="rim-n" x="-15" y="-15" width="30" height="30" rx="10"/></g>
-<g class="mir" transform="scale(${dir < 0 ? 1 : -1} 1)"><g class="crew"><g class="held"><rect x="33" y="-30" width="15" height="60" rx="6"/><rect class="hb" x="33" y="-30" width="15" height="10" rx="5"/></g>
+<g class="mir" transform="scale(${dir < 0 ? 1.6 : -1.6} 1.6)"><g class="crew"><g class="held"><rect x="33" y="-30" width="15" height="60" rx="6"/><rect class="hb" x="33" y="-30" width="15" height="10" rx="5"/></g>
 <rect class="c-arm" x="2" y="-28" width="30" height="9" rx="4.5"/><rect class="c-arm" x="2" y="19" width="30" height="9" rx="4.5"/>
 <ellipse class="c-suit" rx="11" ry="26"/><path class="c-str" d="M-4 -23Q0 0 -4 23"/>
 <circle class="c-glove" cx="32" cy="-23.5" r="5"/><circle class="c-glove" cx="32" cy="23.5" r="5"/>
 <circle class="c-helm" cx="1" r="12.5"/><rect class="c-band" x="-2.5" y="-14.5" width="5" height="29" rx="2.5"/></g></g></g>
 <g class="w-nut"><circle class="nut-glow" r="22"/><polygon class="nut" points="${HEX}"/><circle class="nut-c" r="3.2"/></g>
-<g class="w-check"><circle cx="40" cy="-30" r="14"/><path d="M33 -30l5 5 9-10"/></g></svg>`;
+<g class="w-check"><circle cx="30" cy="-40" r="16"/><path d="M22 -40l6 6 11-12"/></g></svg>`;
 
-const PITBOX = `<svg class="pitbox" viewBox="0 0 440 400" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-<path d="M40 98H400M40 302H400M16 132V268M424 132V268" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none"/>
-<path d="M96 0C96 34 56 40 40 66M360 400C360 366 396 360 410 334" stroke="#1d1d20" stroke-width="3.5" stroke-linecap="round" fill="none"/>
-<path d="M372 32L420 62" stroke="#1d1d20" stroke-width="4" stroke-linecap="round" fill="none"/>
-<ellipse cx="372" cy="26" rx="19" ry="10" fill="#d93b2c" transform="rotate(-24 372 26)"/>
-<circle cx="372" cy="26" r="12" fill="#e14733" stroke="#8c231a" stroke-width="1.5"/>
-<path d="M366 17V35" stroke="#4a4a50" stroke-width="5" stroke-linecap="round"/>
-<circle cx="424" cy="66" r="12" fill="#d93b2c" stroke="#fff" stroke-width="2.5"/>
-<path d="M417 66H431" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
-</svg>`;
+const PITBOX = `<svg class="pitbox" viewBox="0 0 360 447" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+<g transform="matrix(0 -.4663 .4663 0 0 446.7)">
+<path d="M165 207H820M125 568H790M55 275V500M902 275V500" stroke="#f1f1f1" stroke-width="12" fill="none"/>
+<path d="M70 0C62 70 210 60 250 90C290 120 285 160 268 178M240 640C226 740 420 770 560 735C640 715 700 740 706 772" stroke="#1d1d20" stroke-width="7" stroke-linecap="round" fill="none"/>
+<path d="M785 112L890 190" stroke="#1d1d20" stroke-width="11" stroke-linecap="round"/>
+<ellipse cx="892" cy="196" rx="30" ry="20" transform="rotate(36 892 196)" fill="#f1f1f1"/><ellipse cx="892" cy="196" rx="23" ry="14" transform="rotate(36 892 196)" fill="#d9402c"/>
+<g transform="translate(848 92) rotate(-70)"><path d="M-30 -8Q-62 -30 -92 -12" stroke="#d9402c" stroke-width="20" stroke-linecap="round" fill="none"/><ellipse rx="34" ry="52" fill="#d9402c"/><path d="M-12 -46Q-4 0 -12 46" stroke="#4a4a50" stroke-width="9" fill="none" stroke-linecap="round"/><circle r="38" cx="4" fill="#e14733"/><path d="M-6 -42V42" stroke="#4a4a50" stroke-width="14" stroke-linecap="round"/></g>
+</g></svg>`;
 
-const CAR_BODY = `<svg class="car-body" viewBox="0 0 440 400" aria-hidden="true" focusable="false">
-<path d="M62 184C122 156 205 156 262 180C288 190 304 202 334 202L410 205V213L334 212C304 212 288 224 262 234C205 258 122 258 62 230Z" fill="#000" opacity=".14"/>
-<path d="M104 138L130 184M104 138L172 178M104 262L130 216M104 262L172 222M315 138L262 188M315 138L286 196M315 262L262 212M315 262L286 204" stroke="#1d1d20" stroke-width="5" stroke-linecap="round" fill="none"/>
-<path d="M44 150H58V250H44Z" fill="#1d1d20"/>
-<path d="M20 172H46V198H20ZM20 202H46V228H20Z" fill="#f4f4f4"/>
-<path d="M8 177H20M8 223H20" stroke="#1d1d20" stroke-width="3"/>
-<path d="M58 168L215 148Q262 158 292 186V214Q262 242 215 252L58 232Z" fill="#232326"/>
-<path d="M58 178C120 152 205 150 262 176C282 186 296 194 318 196L408 197V203L318 204C296 206 282 214 262 224C205 250 120 248 58 222Z" fill="#d93b2c"/>
-<path d="M92 222L170 156H194L116 226Z" fill="#fff" opacity=".16"/><path d="M128 226L196 166H206L140 228Z" fill="#fff" opacity=".12"/>
-<path d="M70 200H300" stroke="#b92d21" stroke-width="3"/>
-<path d="M398 118L428 108Q436 112 436 126V274Q436 288 428 292L398 282Q410 200 398 118Z" fill="#1d1d20"/>
-<path d="M406 132Q416 200 406 268" stroke="#55555b" stroke-width="2" fill="none"/>
-<ellipse cx="205" cy="200" rx="34" ry="19" fill="#1a1a1d"/>
-<circle cx="204" cy="200" r="12" fill="#f4f4f4"/><circle cx="204" cy="200" r="12" fill="none" stroke="#e8a64c" stroke-width="3"/><path d="M196 200H212" stroke="#6b4a5a" stroke-width="3"/>
-</svg>`;
+const CAR_BODY = `<svg class="car-body" viewBox="0 0 360 447" aria-hidden="true" focusable="false">
+<g transform="matrix(0 -.4663 .4663 0 0 446.7)">
+<path d="M200 332L520 308L640 352V420L520 484L200 462Z" fill="#000" opacity=".12" transform="translate(10 12)"/>
+<path d="M100 326H190M100 448H190" stroke="#1d1d20" stroke-width="5"/>
+<path d="M122 325H190V386H122ZM122 392H190V448H122Z" fill="#f4f4f4"/>
+<path d="M214 300L206 262M240 300L248 262M214 480L206 518M240 480L248 518M612 352L664 290M612 352L694 300M612 420L664 486M612 420L694 482M612 386H668" stroke="#1d1d20" stroke-width="9" stroke-linecap="round" fill="none"/>
+<path d="M186 300L270 290H510L560 322L640 346V426L560 470L510 496H270L186 482Z" fill="#26262a"/>
+<path d="M752 252H832L862 385L832 522H752L790 490Q772 470 790 440L778 388L792 336Q772 300 752 252Z" fill="#26262a"/>
+<path d="M700 345H726V430H700Z" fill="#26262a"/>
+<path d="M195 372L235 338L335 300L450 290L505 300L545 332L600 364L702 372L832 368L860 386L832 404L702 408L600 412L545 446L505 480L450 494L335 484L235 432L195 402Z" fill="#d9402c"/>
+<path d="M232 430L400 305H452L292 452Z" fill="#fff" opacity=".14"/><path d="M560 380H820V392H560Z" fill="#fff" opacity=".12"/>
+<ellipse cx="440" cy="395" rx="62" ry="42" fill="#1b1b1e"/><ellipse cx="445" cy="395" rx="42" ry="29" fill="#f1f1f1"/><ellipse cx="418" cy="395" rx="22" ry="21" fill="#e8a64c"/><path d="M405 386H432M405 404H432" stroke="#6b4a5a" stroke-width="4"/>
+</g></svg>`;
 
 function carHTML(interactive) {
   const tag = interactive ? 'button type="button"' : 'div', end = interactive ? 'button' : 'div';
   return CAR_BODY + WHEELS.map((w, i) =>
-    `<${tag} class="wheel ${w.dir < 0 ? 'wl' : 'wr'}" data-w="${i}" data-s="idle" style="left:${((w.cx - 50) / 4.4).toFixed(2)}%;top:${((w.cy - 50) / 4).toFixed(2)}%;--out:${w.dir * 40}px;--k:${i}">${wheelSVG(w.dir)}</${end}>`).join('');
+    `<${tag} class="wheel ${w.dir < 0 ? 'wl' : 'wr'}" data-w="${i}" data-s="idle" style="left:${((w.cx - 36) / 3.6).toFixed(2)}%;top:${((w.cy - 36) / 4.47).toFixed(2)}%;--out:${w.dir * 40}px;--k:${i}">${wheelSVG(w.dir)}</${end}>`).join('');
 }
 const chev = n => { const h = 12 + (n - 1) * 11, top = (48 - h) / 2; let p = ''; for (let i = 0; i < n; i++) { const y = top + 12 + i * 11; p += `<path d="M10 ${y}L24 ${y - 12}L38 ${y}"/>`; } return `<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">${p}</svg>`; };
 
@@ -1142,9 +1134,9 @@ function arrive() {
   const dur = RM.matches ? 60 : 1250;
   wc(carWrap, true); SFX.whoosh(); vib(16);
   const a = anim(carWrap, [
-    { transform: 'translateX(-118%)', easing: 'cubic-bezier(.12,.8,.2,1)' },
-    { transform: 'translateX(3.2%)', offset: .72, easing: 'cubic-bezier(.4,0,.2,1)' },
-    { transform: 'translateX(0)' }], { duration: dur, fill: 'forwards' });
+    { transform: 'translateY(118%)', easing: 'cubic-bezier(.12,.8,.2,1)' },
+    { transform: 'translateY(-3.2%)', offset: .72, easing: 'cubic-bezier(.4,0,.2,1)' },
+    { transform: 'translateY(0)' }], { duration: dur, fill: 'forwards' });
   const done = () => { carWrap.style.transform = 'none'; if (a) a.cancel(); wc(carWrap, false); };
   if (a) a.onfinish = done; else done();
   anim(camera, [{ transform: 'scale(1.07) translateY(10px)' }, { transform: 'scale(1) translateY(0)' }], { duration: RM.matches ? 1 : 800, delay: RM.matches ? 0 : dur * .62, easing: E_OUT, fill: 'both' });
@@ -1262,8 +1254,8 @@ function goDown(e) {
   SFX.good(G.reactionMs); vib([20, 30, 60]);
   banner(t('bReaction', { s: fmt(G.reactionMs) }), 1300); say(t('bReaction', { s: fmt(G.reactionMs) }));
   wc(carWrap, true); wc(streaks, true);
-  anim(carWrap, [{ transform: 'translateX(0) scale(1)' }, { transform: 'translateX(-3%) scale(.99)', offset: .14 }, { transform: 'translateX(150%) scale(1.04)' }], { duration: RM.matches ? 1 : 1050, delay: 60, easing: 'cubic-bezier(.5,0,.85,.3)', fill: 'forwards' });
-  anim(streaks, [{ opacity: 0, transform: 'translateX(-14%)' }, { opacity: .9, transform: 'translateX(2%)', offset: .35 }, { opacity: 0, transform: 'translateX(14%)' }], { duration: 800, delay: 120, easing: 'linear' });
+  anim(carWrap, [{ transform: 'translateY(0) scale(1)' }, { transform: 'translateY(3%) scale(.99)', offset: .14 }, { transform: 'translateY(-150%) scale(1.04)' }], { duration: RM.matches ? 1 : 1050, delay: 60, easing: 'cubic-bezier(.5,0,.85,.3)', fill: 'forwards' });
+  anim(streaks, [{ opacity: 0, transform: 'translateY(-12%)' }, { opacity: .9, transform: 'translateY(2%)', offset: .35 }, { opacity: 0, transform: 'translateY(14%)' }], { duration: 800, delay: 120, easing: 'linear' });
   if (!RM.matches) anim(camera, [{ transform: 'scale(1)' }, { transform: 'scale(1.07)' }], { duration: 1100, delay: 60, easing: E_IN });
   later(220, () => SFX.whoosh());
   recordRound(false); later(1700, showResult);
