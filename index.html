@@ -110,9 +110,9 @@ body[data-screen=game] #btnLang{opacity:0;visibility:hidden;pointer-events:none}
    ===================================================================== */
 #screens{position:relative;flex:1;min-height:0}
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(16px);
-  transition:opacity .25s var(--out),transform .35s var(--out),visibility 0s .35s}
+  transition:opacity .14s linear,transform .35s var(--out),visibility 0s .14s}
 .screen.active{opacity:1;visibility:visible;pointer-events:auto;transform:none;
-  transition:opacity .3s var(--out),transform .4s var(--out),visibility 0s}
+  transition:opacity .25s var(--out) .14s,transform .4s var(--out) .14s,visibility 0s}
 @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 .screen.active .st{animation:rise .5s var(--out) backwards;animation-delay:calc(var(--i,0) * 70ms + 90ms)}
 
@@ -976,24 +976,17 @@ const wheelSVG = dir => `<svg viewBox="-55 -55 110 110" aria-hidden="true" focus
 
 const PITBOX = `<svg class="pitbox" viewBox="0 0 360 447" preserveAspectRatio="none" aria-hidden="true" focusable="false">
 <path d="M96 30H265V420H96Z" stroke="#f1f1f1" stroke-width="6" stroke-linejoin="round" fill="none"/>
-<path d="M62 -8C62 60 30 84 -8 112M298 455C298 404 330 380 368 356" stroke="#1d1d20" stroke-width="3.5" stroke-linecap="round" fill="none"/>
-<path d="M44 56L88 92" stroke="#1d1d20" stroke-width="3.5" stroke-linecap="round"/>
-<circle cx="93" cy="97" r="11" fill="#d9402c" stroke="#f1f1f1" stroke-width="3"/><path d="M87 97H99" stroke="#f1f1f1" stroke-width="4" stroke-linecap="round"/>
-<path d="M14 60Q22 44 38 46Q52 50 52 62Q50 76 34 78Q18 78 14 60Z" fill="#d9402c"/>
-<path d="M44 66Q60 74 66 78M32 74Q48 86 62 86" stroke="#d9402c" stroke-width="7" stroke-linecap="round" fill="none"/>
-<circle cx="67" cy="79" r="4.5" fill="#4a4a50"/><circle cx="63" cy="87" r="4.5" fill="#4a4a50"/>
-<circle cx="30" cy="62" r="14" fill="#e14733" stroke="#8c231a" stroke-width="1.5"/>
-<path d="M22 54L38 70" stroke="#4a4a50" stroke-width="6" stroke-linecap="round"/>
 </svg>`;
 
 const CAR_BODY = `<svg class="car-body" viewBox="0 0 360 447" aria-hidden="true" focusable="false">
 <g transform="matrix(0 -.4663 .4663 0 0 446.7)">
 <path d="M200 332L520 308L640 352V420L520 484L200 462Z" fill="#000" opacity=".12" transform="translate(10 12)"/>
-<path d="M100 326H190M100 448H190" stroke="#1d1d20" stroke-width="5"/>
-<path d="M122 325H190V386H122ZM122 392H190V448H122Z" fill="#f4f4f4"/>
+<path d="M96 312H110V462H96Z" fill="#26262a"/>
+<path d="M110 322H190V386H110ZM110 392H190V452H110Z" fill="#f4f4f4"/>
+<path d="M96 322H190M96 452H190" stroke="#26262a" stroke-width="6"/>
 <path d="M214 300L206 262M240 300L248 262M214 480L206 518M240 480L248 518M612 352L664 290M612 352L694 300M612 420L664 486M612 420L694 482M612 386H668" stroke="#1d1d20" stroke-width="9" stroke-linecap="round" fill="none"/>
 <path d="M186 300L270 290H510L560 322L640 346V426L560 470L510 496H270L186 482Z" fill="#26262a"/>
-<path d="M752 252H832L862 385L832 522H752L790 490Q772 470 790 440L778 388L792 336Q772 300 752 252Z" fill="#26262a"/>
+<path d="M730 238H842L868 385L842 536H730L776 502Q752 478 782 450L764 388L782 322Q752 294 730 238Z" fill="#26262a"/><path d="M836 252L858 385L836 522" stroke="#55555b" stroke-width="5" fill="none" stroke-linecap="round"/>
 <path d="M700 345H726V430H700Z" fill="#26262a"/>
 <path d="M195 372L235 338L335 300L450 290L505 300L545 332L600 364L702 372L832 368L860 386L832 404L702 408L600 412L545 446L505 480L450 494L335 484L235 432L195 402Z" fill="#d9402c"/>
 <path d="M232 430L400 305H452L292 452Z" fill="#fff" opacity=".14"/><path d="M560 380H820V392H560Z" fill="#fff" opacity=".12"/>
