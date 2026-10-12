@@ -174,8 +174,7 @@ html[dir=rtl] .title span{transform:none}
 .prize{display:inline-flex;align-items:center;gap:10px;padding:9px 18px;border-radius:18px;border:3px solid var(--deep);background:var(--cream);color:var(--deep);box-shadow:0 5px 0 var(--deep);
   font:800 clamp(15px,2.3vmin,20px)/1.25 var(--f-text)}
 .prize svg{width:22px;height:22px;flex:none}
-.top5{padding:14px 14px 14px;flex:none}
-.top5 h2{font-size:20px;margin-bottom:8px}
+
 
 /* timing-light gantry (shared by start hero and the launch phase) */
 .gantry{display:flex;align-items:center;justify-content:center;gap:clamp(8px,2vmin,16px);padding:10px 16px;border-radius:20px;
@@ -525,22 +524,29 @@ div.wheel{pointer-events:none}
 /* start screen: auto margins centre the stack but never clip the top when it overflows */
 #sStart{justify-content:flex-start}
 #sStart>.hero{margin-top:auto}
-#sStart>.top5{margin-bottom:auto}
 #sStart{padding-top:16px}
+#sStart>.copy{margin-bottom:auto}
+#sStart>.hero,#sStart>.copy{width:min(100%,720px)}
+#sStart>.hero{gap:22px;margin-bottom:12px}
+#sStart .hero .gantry{width:min(68vw,280px);padding:9px 14px}
+#sStart .copy{gap:12px}
+#sStart .title{font-size:clamp(56px,8vw,92px);padding-bottom:8px}
+#sStart .name-note{display:none}
+#sStart .name-box input{min-height:58px}
+#sStart .cta{min-width:min(100%,420px)}
+#sStart .prize{margin-top:4px}
 /* phones: smaller title and tighter gaps so the name box, Start and the board fit one screen */
 @media (max-width:640px){
   #sStart{gap:8px}
-  #sStart .title{font-size:clamp(40px,12vw,52px);padding-bottom:4px}
-  #sStart .copy{gap:10px}
-  #sStart .hero{margin-bottom:0}
-  #sStart .hero .gantry{width:min(60vw,240px);padding:8px 12px}
+  #sStart .title{font-size:clamp(42px,11vw,58px);padding-bottom:5px}
+  #sStart .copy{gap:9px}
+  #sStart .hero{margin-bottom:10px}
+  #sStart .hero{gap:18px}
+  #sStart .hero .gantry{width:min(62vw,250px);padding:8px 12px}
   #sStart .name-box input{min-height:52px;font-size:20px}
   #sStart .name-msg{min-height:0;margin-top:0}
   #sStart .cta .face{min-height:58px}
-  #sStart .prize{padding:7px 14px;font-size:15px}
-  #sStart .top5{padding:12px;margin-top:2px}
-  #sStart .top5 h2{font-size:18px;margin-bottom:6px}
-  #sStart .board li{min-height:36px}
+  #sStart .prize{padding:7px 14px;font-size:14px}
 }
 </style>
 </head>
@@ -627,15 +633,10 @@ div.wheel{pointer-events:none}
         <div class="name-box st" style="--i:3">
           <label class="sr" for="playerName" data-i="fName"></label>
           <input id="playerName" type="text" maxlength="24" autocomplete="off" autocapitalize="words" enterkeyhint="go">
-          <p class="name-note" data-i="nameNote"></p>
           <p class="name-msg" id="nameMsg" role="alert"></p>
         </div>
         <button id="btnStart" class="cta idle pressable st" type="button" style="--i:3"><span class="face" data-i="start"></span></button>
         <p class="prize st" style="--i:4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="14" r="7.5"/><path d="M12 14v-4M9.5 2.5h5M12 6.5v-4"/></svg><span id="prizeTxt"></span></p>
-      </div>
-      <div class="top5 card st" style="--i:5">
-        <h2 data-i="top5"></h2>
-        <ol id="top5List" class="board"></ol>
       </div>
     </section>
 
@@ -747,7 +748,7 @@ const CONFIG = {
    ===================================================================== */
 const I18N = {
   en: {
-    concept:'Concept demo', start:'Start', namePh:'Your name', nameNote:"Your first name appears on today's leaderboard.", next:'New player', hTime:'Time', hWheels:'Wheels', top5:"Today's top 5", noTimes:'No times yet today. Set the first one.',
+    concept:'Concept demo', start:'Start', namePh:'Your name', next:'New player', hTime:'Time', hWheels:'Wheels', noTimes:'No times yet today. Set the first one.',
     guest:'Guest', you:'You', unit:'s', logo:'Logo',
     muteOn:'Mute sound', muteOff:'Turn sound on', langLabel:'Switch language to Arabic', langBtn:'العربية',
     title1:'Pit Stop', title2:'Challenge',
@@ -767,7 +768,7 @@ const I18N = {
     w_fl:'Front left wheel', w_fr:'Front right wheel', w_rr:'Rear right wheel', w_rl:'Rear left wheel'
   },
   ar: {
-    concept:'نموذج تجريبي', start:'ابدأ', namePh:'اسمك', nameNote:'يظهر اسمك الأول في لائحة اليوم.', next:'لاعب جديد', hTime:'الوقت', hWheels:'العجلات', top5:'أفضل 5 أزمنة اليوم', noTimes:'لا توجد أزمنة اليوم بعد. كن صاحب أول زمن.',
+    concept:'نموذج تجريبي', start:'ابدأ', namePh:'اسمك', next:'لاعب جديد', hTime:'الوقت', hWheels:'العجلات', noTimes:'لا توجد أزمنة اليوم بعد. كن صاحب أول زمن.',
     guest:'ضيف', you:'أنت', unit:'ث', logo:'الشعار',
     muteOn:'كتم الصوت', muteOff:'تشغيل الصوت', langLabel:'التبديل إلى الإنجليزية', langBtn:'English',
     title1:'تحدي', title2:'محطة الصيانة',
@@ -1029,7 +1030,6 @@ function applyLang() {
   $('#playerName').placeholder = t('namePh');
   const nm = $('#nameMsg'); if (nm.dataset.k) nm.textContent = t(nm.dataset.k);
   setPenChip();
-  renderBoard($('#top5List'), CONFIG.leaderboardSize, null);
   if (cur === 'result') { renderResultTexts(); renderBoard($('#boardList'), CONFIG.leaderboardSize, lastRound && !lastRound.dnf ? lastRound.id : null); }
   if (adminEl.classList.contains('open')) adminStats();
 }
@@ -1274,7 +1274,7 @@ function revealTier() { tierEl.classList.add('show'); SFX.tier(lastRound.tier); 
 
 function goStart() {
   Q.length = 0; countAnim = null; playerName = ''; $('#playerName').value = ''; G = newG(); G.state = 'start';
-  show('start'); renderBoard($('#top5List'), CONFIG.leaderboardSize, null);
+  show('start');
   resetNote.classList.remove('on'); adminOpen && closeAdmin();
 }
 
@@ -1317,7 +1317,7 @@ function bindAdmin() {
     const now = performance.now();
     if (now > confirmUntil) { confirmUntil = now + 3500; $('#admClear').textContent = t('admConfirm'); return; }
     DB = { v: 1, leads: [], scores: [] }; session.rounds = []; try { localStorage.removeItem(CONFIG.storageKey); } catch (e) {}
-    clearConfirm(); adminStats(); $('#admMsg').textContent = t('admCleared'); renderBoard($('#top5List'), CONFIG.leaderboardSize, null);
+    clearConfirm(); adminStats(); $('#admMsg').textContent = t('admCleared');
   });
   addEventListener('keydown', e => { if (e.key === 'Escape' && adminOpen) closeAdmin(); });
 }
