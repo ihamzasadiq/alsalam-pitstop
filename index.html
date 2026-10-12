@@ -295,6 +295,14 @@ div.wheel{pointer-events:none}
 .wheel[data-s=done] .tread{animation:treadspin .16s linear 6}
 .wheel .w-ring{stroke-width:3.5}.wheel .nut{fill:#e6ecf8}
 @media (prefers-reduced-motion:reduce){.wheel .tread{animation:none !important}}
+/* swap: tyre rolls in from the floor, nut spins down, new tyre seats with a squash, crew leans on the gun */
+.wheel[data-s=tighten] .floor-tyre,.wheel[data-s=done] .floor-tyre{transform:translateX(78px) rotate(300deg);opacity:0;transition:transform .26s cubic-bezier(.5,0,.8,.45),opacity .06s linear .22s}
+.wheel[data-s=tighten] .w-nut{transform:rotate(-270deg) scale(1.2);transition:transform .34s var(--out),opacity .2s}
+.wheel[data-s=done] .w-nut{transform:rotate(-360deg)}
+@keyframes seat{0%{opacity:0;transform:scale(1.45) rotate(-40deg)}35%{opacity:1;transform:scale(.9)}65%{transform:scale(1.05)}100%{opacity:1;transform:none}}
+.wheel[data-s=tighten] .w-new,.wheel[data-s=done] .w-new{opacity:1;transform:none;transition:none;animation:seat .42s cubic-bezier(.3,.7,.3,1) .5s backwards}
+@keyframes crewWork{0%,100%{transform:translate(-52px,0)}50%{transform:translate(-52px,1.6px)}}
+.wheel[data-s=tighten] .crew{animation:crewIn .62s cubic-bezier(.3,.8,.3,1) forwards,crewWork .1s linear .62s infinite}
 /* flat grey pit lane like the reference */
 #stage{background:#c4c9d0 !important}
 .pitbox rect{stroke:#fff !important;stroke-width:5 !important;stroke-dasharray:none !important;fill:none !important}
@@ -458,6 +466,82 @@ legend{font:700 14px/1.2 var(--f-text);color:var(--ink2);margin-bottom:8px;paddi
   *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;animation-delay:0s !important;transition-duration:.001ms !important;transition-delay:0s !important}
   .hero-car{animation:none}
 }
+
+/* =====================================================================
+   PIT BOX v2: landscape, top-down, car nose right (artwork-faithful),
+   Sakhir scene, clean game layout for phone and desktop
+   ===================================================================== */
+#stage{width:min(100cqw,110cqh);height:auto;aspect-ratio:440/400;background:#bcbcc0 !important}
+.wheel,.float{width:22.73%}
+.wheel{height:25%}
+.wheel::after{left:-6px;right:-6px}
+.wheel.wl::after{top:-88px;bottom:50%}
+.wheel.wr::after{top:50%;bottom:-88px}
+.pitbox{z-index:0}
+.tyre-n{fill:#161618;stroke:#3c3c40}
+.tread{stroke:#8d8d93;stroke-width:4;stroke-dasharray:none}
+.band,.rim-n,.fl-spk,.fl-hi{display:none}
+.fl-tyre{fill:#18181a}.fl-rim{fill:#8a8a90}.fl-band{stroke:#2a2a2d}.fl-hub{fill:#4a4a50}
+.w-axle rect,.ax-hub{fill:#26262a}.ax-hub{stroke:#26262a}
+.crew .c-suit,.crew .c-arm{fill:#d93b2c}.crew .c-str{stroke:#4a4a50}.crew .c-glove{fill:#6b4a5a}
+.crew .c-helm{fill:#e14733;stroke:#8c231a;stroke-width:1.5}.crew .c-band{fill:#4a4a50}
+.held rect{fill:#161618;stroke:#8d8d93}.held .hb{fill:#8d8d93}
+#streaks{left:-30%;right:auto;width:160%;top:0;height:100%;
+  background:repeating-linear-gradient(0deg,transparent 0 14px,rgb(255 255 255 / .38) 14px 16px,transparent 16px 31px,rgb(255 255 255 / .2) 31px 33px)}
+
+/* HUD: label no longer collides with the badge outline */
+.badge{padding:15px 20px 14px}
+#timer{font:800 clamp(40px,8vmin,64px)/1 var(--f-num)}
+.b-timer{min-width:clamp(150px,36vw,230px)}
+#hud{align-items:flex-start}
+
+/* footer: lights bar, then coaching bubble / GO share one cell */
+#foot{height:auto;margin:0 auto;width:100%;max-width:560px;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto 96px;row-gap:12px;justify-items:center}
+#foot .stage-gantry{position:relative;left:auto;right:auto;top:auto;width:min(100%,380px);grid-area:1/1;z-index:1;
+  opacity:.6;transform:scale(.96);transition:transform .45s var(--spring),opacity .25s linear}
+#foot .stage-gantry.in{opacity:1;transform:none}
+.gantry .lamp{width:auto;flex:0 1 clamp(30px,5vmin,52px);min-width:0}
+.hero .gantry{width:auto;max-width:92%}
+#foot .prompt,#foot .go{position:relative;inset:auto;margin:0;top:auto;grid-area:2/1;width:100%;min-height:96px}
+#foot .prompt{align-self:stretch}
+#foot .go{padding:8px 12px 10px}
+.go-main{font:800 clamp(34px,7vmin,60px)/1 var(--f-display)}
+
+/* start screen proportions */
+.title{font-size:clamp(48px,11vmin,104px)}
+#sStart{gap:10px}
+
+/* phones: keep clear of the host's corner badge */
+@media (max-width:640px){#sGame,#sStart{padding-bottom:calc(var(--sb) + 56px)}}
+
+/* wide screens: timer left of the pit box, wheels + penalty right */
+@media (min-width:900px) and (min-aspect-ratio:5/4){
+  #sGame{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;column-gap:28px}
+  #hud{display:contents}
+  .b-timer{grid-column:1;grid-row:1;justify-self:end;margin-top:16px}
+  .hud-right{grid-column:3;grid-row:1;justify-self:start;align-items:flex-start;margin-top:16px}
+  #stageWrap{grid-column:2;grid-row:1;width:min(62vw,calc((100vh - 330px) * 1.1))}
+  #foot{grid-column:1/-1;grid-row:2}
+}
+
+/* review fixes */
+#foot .stage-gantry{opacity:1}
+.hero .gantry{width:min(78vw,300px);max-width:none}
+#hud{flex-wrap:nowrap;gap:8px}
+.b-timer{min-width:0;flex:1 1 auto;max-width:230px}
+#timer{font-size:clamp(36px,10vw,64px)}
+@media (min-width:900px) and (min-aspect-ratio:5/4){#sGame{padding-bottom:calc(var(--sb) + 28px)}#timer{font-size:clamp(40px,6vmin,64px)}.b-timer,.hud-right{align-self:start}}
+
+/* penalty chip rides on the timer badge; result + short-screen polish */
+.b-timer{position:relative}
+.badge>.b-pen{position:absolute;top:8px;inset-inline-end:12px;display:flex;align-items:center;margin:0;padding:3px 10px 4px;border-radius:99px;
+  background:var(--accent);border:2px solid var(--cream);opacity:0;transform:scale(.8);transition:opacity .2s,transform .35s var(--spring)}
+.badge>.b-pen.on{opacity:1;transform:none}
+.b-pen .b-label{display:none}
+.b-pen .num{font-size:15px;color:#fff}
+.res-scroll{padding-top:22px}
+.res-time{font-size:clamp(60px,14vmin,112px);padding-inline:34px}
+@media (max-height:720px){body[data-screen=game] #concept{display:none}#foot{grid-template-rows:auto 84px}#foot .prompt,#foot .go{min-height:84px}}
 </style>
 </head>
 
@@ -475,26 +559,37 @@ legend{font:700 14px/1.2 var(--f-text);color:var(--ink2);margin-bottom:8px;paddi
   </defs>
 </svg>
 
-<!-- original illustrated street scene (generic towers, sand-coloured arch buildings, palms). No real landmarks, logos or brand marks. -->
+<!-- Sakhir circuit scene: original illustration of the Bahrain International Circuit tower (flag, tiered tower, tent roof), grandstand, kerbs and palms. -->
 <div id="scene" aria-hidden="true">
-<svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMax slice" focusable="false">
+<svg viewBox="0 0 800 220" preserveAspectRatio="xMidYMax slice" focusable="false">
   <defs>
     <radialGradient id="gSun"><stop offset="0" stop-color="#FFF8DC"/><stop offset="1" stop-color="#FFF8DC" stop-opacity="0"/></radialGradient>
-    <g id="bA"><rect width="54" height="52" fill="#EBCFA2"/><rect width="54" height="6" fill="#D2A872"/><rect x="6" y="14" width="42" height="7" rx="2" fill="#D9B27D"/><path d="M8 52V34a5 5 0 0 1 10 0V52zM22 52V34a5 5 0 0 1 10 0V52zM36 52V34a5 5 0 0 1 10 0V52z" fill="#A8703F"/></g>
-    <g id="bB"><rect width="40" height="78" fill="#E3C08C"/><rect width="40" height="6" fill="#C99A63"/><path d="M6 78V62a5 5 0 0 1 10 0V78zM24 78V62a5 5 0 0 1 10 0V78zM6 52V36a5 5 0 0 1 10 0V52zM24 52V36a5 5 0 0 1 10 0V52zM6 28V16a5 5 0 0 1 10 0V28zM24 28V16a5 5 0 0 1 10 0V28z" fill="#A8703F"/></g>
-    <g id="bC"><rect x="12" y="-14" width="6" height="14" fill="#6C93A4"/><rect width="30" height="100" fill="#6C93A4"/><path d="M0 14H30M0 28H30M0 42H30M0 56H30M0 70H30M0 84H30M10 0V100M20 0V100" stroke="#8FB3C2" stroke-width="1.2" fill="none"/></g>
     <g id="palm"><path d="M0 0C5-24 0-48 8-74" fill="none" stroke="#8B5E34" stroke-width="5" stroke-linecap="round"/>
       <g fill="#2F9158"><path d="M8-74C26-92 48-86 58-70C42-78 26-78 8-74z"/><path d="M8-74C-10-92-32-86-42-70C-26-78-10-78 8-74z"/><path d="M8-74C20-98 34-104 50-100C38-96 24-90 8-74z"/><path d="M8-74C-4-98-18-104-34-100C-22-96-8-90 8-74z"/></g>
       <g fill="#25774A"><path d="M8-74C30-80 52-70 60-52C44-64 26-68 8-74z"/><path d="M8-74C-14-80-36-70-44-52C-28-64-10-68 8-74z"/><path d="M8-74C8-96 12-108 20-114C14-100 12-88 8-74z"/></g></g>
+    <g id="stand"><rect y="-24" width="120" height="24" fill="#B9A98F"/><path d="M0-24H120V-30H0z" fill="#8D7D66"/>
+      <path d="M-4-30L124-30L116-44H4z" fill="#F4F1EA"/><path d="M0 -17H120M0-10H120" stroke="#CE1126" stroke-width="3" opacity=".75"/>
+      <path d="M8-30V0M40-30V0M72-30V0M104-30V0" stroke="#8D7D66" stroke-width="2"/></g>
   </defs>
-  <circle cx="318" cy="64" r="84" fill="url(#gSun)"/>
-  <path fill="#A8CFD6" opacity=".9" d="M0 170h22v-34h14v34h10v-52h8v52h18v-40h12v40h14v-70h6v70h14v-30h20v30h16v-58h10v58h12v-36h16v36h18v-48h8v48h14v-28h20v28h12v-62h6v62h16v-32h14v32h22v-44h10v44h12V200H0z"/>
-  <use href="#bA" x="6" y="138"/><use href="#bB" x="64" y="112"/><use href="#bC" x="112" y="90"/><use href="#bA" x="150" y="138"/>
-  <use href="#bB" x="212" y="112"/><use href="#bC" x="262" y="90"/><use href="#bA" x="300" y="138"/><use href="#bB" x="362" y="112"/>
-  <path d="M196 190V118" stroke="#5a4630" stroke-width="2"/><path d="M196 120h28l-6 8 6 8h-28z" style="fill:var(--accent)"/>
-  <use href="#palm" transform="translate(40 198) scale(1.15)"/><use href="#palm" transform="translate(178 200) scale(.95)"/>
-  <use href="#palm" transform="translate(286 198) scale(1.2)"/><use href="#palm" transform="translate(376 200) scale(.9)"/>
-  <rect y="190" width="400" height="30" fill="#EBCB9A"/><rect y="190" width="400" height="4" fill="#FFF6E5"/>
+  <circle cx="190" cy="62" r="84" fill="url(#gSun)"/>
+  <path fill="#B7D2DA" opacity=".9" d="M0 190V160C60 140 110 150 170 156C240 120 300 128 360 150C430 134 500 140 560 154C640 132 720 142 800 158V190Z"/>
+  <path fill="#E7C998" d="M0 190V176C120 158 260 168 380 176C520 164 680 170 800 178V190Z"/>
+  <use href="#stand" x="120" y="190"/><use href="#stand" x="640" y="190"/>
+  <g transform="translate(540 190)">
+    <rect x="-28" y="-13" width="56" height="13" fill="#EAE5D9"/><rect x="-28" y="-10" width="56" height="6" fill="#7C97A6"/><rect x="-28" y="-26" width="56" height="13" fill="#EAE5D9"/><rect x="-28" y="-23" width="56" height="6" fill="#7C97A6"/><rect x="-28" y="-39" width="56" height="13" fill="#EAE5D9"/><rect x="-28" y="-36" width="56" height="6" fill="#7C97A6"/><rect x="-28" y="-52" width="56" height="13" fill="#EAE5D9"/><rect x="-28" y="-49" width="56" height="6" fill="#7C97A6"/><rect x="-28" y="-65" width="56" height="13" fill="#EAE5D9"/><rect x="-28" y="-62" width="56" height="6" fill="#7C97A6"/><rect x="-28" y="-78" width="56" height="13" fill="#EAE5D9"/><rect x="-28" y="-75" width="56" height="6" fill="#7C97A6"/><rect x="-28" y="-91" width="56" height="13" fill="#EAE5D9"/><rect x="-28" y="-88" width="56" height="6" fill="#7C97A6"/>
+    <rect x="-34" y="-97" width="68" height="6" fill="#CFC8BA"/>
+    <rect x="12" y="-91" width="16" height="91" fill="#000" opacity=".1"/>
+    <path d="M-38-97H38L48-112H-48Z" fill="#C9824A"/>
+    <path d="M-44 -112L-36 -132L-28 -112Z" fill="#FFFDF7"/><path d="M-26 -112L-18 -142L-10 -112Z" fill="#FFFDF7"/><path d="M-8 -112L0 -152L8 -112Z" fill="#FFFDF7"/><path d="M10 -112L18 -142L26 -112Z" fill="#FFFDF7"/><path d="M28 -112L36 -132L44 -112Z" fill="#FFFDF7"/>
+    <path d="M0-150V-174" stroke="#5a4630" stroke-width="2.5"/>
+    <path d="M0 -174H26V-156H0Z" fill="#CE1126"/><path d="M0 -174H8L12 -170.4L8 -166.8L12 -163.2L8 -159.6L12 -156H0Z" fill="#fff"/>
+  </g>
+  <use href="#palm" transform="translate(40 198) scale(1.15)"/><use href="#palm" transform="translate(330 200) scale(.95)"/>
+  <use href="#palm" transform="translate(760 198) scale(1.2)"/><use href="#palm" transform="translate(440 200) scale(.8)"/>
+  <rect y="190" width="800" height="30" fill="#EBCB9A"/>
+  <rect y="190" width="800" height="14" fill="#9A9CA2"/>
+  <path d="M0 197H800" stroke="#fff" stroke-width="2" stroke-dasharray="18 14" opacity=".8"/>
+  <path d="M0 207H800" stroke="#fff" stroke-width="5"/><path d="M0 207H800" stroke="#CE1126" stroke-width="5" stroke-dasharray="16 16"/>
 </svg>
 </div>
 
@@ -544,23 +639,23 @@ legend{font:700 14px/1.2 var(--f-text);color:var(--ink2);margin-bottom:8px;paddi
         <div class="badge b-timer">
           <span class="b-label" data-i="hTime"></span>
           <div id="timer" class="ltr" dir="ltr" aria-hidden="true"><span id="tVal">0.000</span><small class="unit"></small></div>
+          <div id="pen" class="b-pen" aria-hidden="true"><span class="b-label" data-i="penLabel"></span><span id="penTxt" class="num ltr"></span></div>
         </div>
         <div class="hud-right">
           <div class="badge b-wheels"><span class="b-label" data-i="hWheels"></span><div class="pips" id="pips" aria-hidden="true"></div></div>
-          <div id="pen" class="badge b-pen" aria-hidden="true"><span class="b-label" data-i="penLabel"></span><span id="penTxt" class="num ltr"></span></div>
         </div>
       </div>
       <div id="stageWrap">
         <div id="stage">
           <div id="camera"></div>
           <div id="streaks"></div>
-          <div id="gantry" class="gantry stage-gantry" aria-hidden="true"></div>
           <div id="cd" class="cd" aria-hidden="true"></div>
           <div id="banner" class="banner" aria-hidden="true"><b>!</b><span id="bannerTxt"></span></div>
           <div id="flash"></div>
         </div>
       </div>
       <div id="foot">
+        <div id="gantry" class="gantry stage-gantry" aria-hidden="true"></div>
         <p id="prompt" class="prompt" aria-hidden="true"></p>
         <button id="btnGo" class="go" type="button"><span class="go-main" id="goMain"></span><span class="go-sub" id="goSub"></span></button>
       </div>
@@ -860,16 +955,16 @@ const todayBoard = () => { const d = dayKey(); return allScores().filter(s => s.
    BUILD STATIC MARKUP (car, wheels, lamps, pips, chips)
    ===================================================================== */
 const WHEELS = [
-  { cx: 116, cy: 150, dir: -1, key: 'w_fl' },
-  { cx: 244, cy: 150, dir:  1, key: 'w_fr' },
-  { cx: 248, cy: 372, dir:  1, key: 'w_rr' },
-  { cx: 112, cy: 372, dir: -1, key: 'w_rl' }
+  { cx: 315, cy: 138, dir: -1, key: 'w_fl' },
+  { cx: 315, cy: 262, dir:  1, key: 'w_fr' },
+  { cx: 100, cy: 262, dir:  1, key: 'w_rr' },
+  { cx: 100, cy: 138, dir: -1, key: 'w_rl' }
 ];
 const spokes = cls => { let p = ''; for (let k = 0; k < 5; k++) { const a = (k * 72 - 90) * Math.PI / 180; p += 'M' + (10 * Math.cos(a)).toFixed(1) + ' ' + (10 * Math.sin(a)).toFixed(1) + 'L' + (30 * Math.cos(a)).toFixed(1) + ' ' + (30 * Math.sin(a)).toFixed(1); } return '<path class="' + cls + '" d="' + p + '"/>'; };
 const HEX = (() => { const p = []; for (let k = 0; k < 6; k++) { const a = k * 60 * Math.PI / 180; p.push((9 * Math.cos(a)).toFixed(1) + ',' + (9 * Math.sin(a)).toFixed(1)); } return p.join(' '); })();
 const wheelSVG = dir => `<svg viewBox="-55 -55 110 110" aria-hidden="true" focusable="false"><defs><clipPath id="tyClip"><rect x="-33" y="-50" width="66" height="100" rx="14"/></clipPath></defs>
-<rect class="w-ring" x="-40" y="-56" width="80" height="112" rx="26"/>
 <g class="w-axle"><rect x="-8" y="-24" width="16" height="48" rx="7"/><circle class="ax-hub" r="9"/></g>
+<g class="mir" transform="rotate(90)"><rect class="w-ring" x="-40" y="-56" width="80" height="112" rx="26"/>
 <g class="mir" transform="scale(${dir < 0 ? 1 : -1} 1)">
 <g transform="translate(-78 0)"><ellipse class="fl-sh" cx="4" cy="6" rx="33" ry="33"/><circle class="floor-glow" r="44"/>
 <g class="floor-tyre"><circle class="fl-tyre" r="33"/><circle class="fl-rim" r="20"/><circle class="fl-band" r="20"/><path class="fl-spk" d="M0 -17V17M-17 0H17M-12 -12L12 12M12 -12L-12 12"/><circle class="fl-hub" r="5"/><path class="fl-hi" d="M-25 -17A30 30 0 0 1 -8 -29"/></g></g>
@@ -879,56 +974,41 @@ const wheelSVG = dir => `<svg viewBox="-55 -55 110 110" aria-hidden="true" focus
 <rect class="c-arm" x="2" y="-28" width="30" height="9" rx="4.5"/><rect class="c-arm" x="2" y="19" width="30" height="9" rx="4.5"/>
 <ellipse class="c-suit" rx="11" ry="26"/><path class="c-str" d="M-4 -23Q0 0 -4 23"/>
 <circle class="c-glove" cx="32" cy="-23.5" r="5"/><circle class="c-glove" cx="32" cy="23.5" r="5"/>
-<circle class="c-helm" cx="1" r="12.5"/><path class="c-visor" d="M5 -8Q12 0 5 8Z"/></g></g>
+<circle class="c-helm" cx="1" r="12.5"/><rect class="c-band" x="-2.5" y="-14.5" width="5" height="29" rx="2.5"/></g></g></g>
 <g class="w-nut"><circle class="nut-glow" r="22"/><polygon class="nut" points="${HEX}"/><circle class="nut-c" r="3.2"/></g>
-<g class="w-check"><circle cx="30" cy="-40" r="16"/><path d="M22 -40l6 6 11-12"/></g></svg>`;
+<g class="w-check"><circle cx="40" cy="-30" r="14"/><path d="M33 -30l5 5 9-10"/></g></svg>`;
 
-const PITBOX = `<svg class="pitbox" viewBox="0 0 360 520" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-<rect x="8" y="14" width="344" height="492" rx="26" fill="rgba(255,255,255,.02)" stroke="rgba(236,243,240,.12)" stroke-width="1.5" stroke-dasharray="3 9"/>
-<g fill="none" style="stroke:var(--accent2)" stroke-width="3" stroke-linecap="round" opacity=".55">
-<path d="M8 52V30a16 16 0 0 1 16-16h28"/><path d="M352 52V30a16 16 0 0 0-16-16h-28"/><path d="M8 468v22a16 16 0 0 0 16 16h28"/><path d="M352 468v22a16 16 0 0 1-16 16h-28"/></g></svg>`;
+const PITBOX = `<svg class="pitbox" viewBox="0 0 440 400" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+<path d="M40 98H400M40 302H400M16 132V268M424 132V268" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none"/>
+<path d="M96 0C96 34 56 40 40 66M360 400C360 366 396 360 410 334" stroke="#1d1d20" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+<path d="M372 32L420 62" stroke="#1d1d20" stroke-width="4" stroke-linecap="round" fill="none"/>
+<ellipse cx="372" cy="26" rx="19" ry="10" fill="#d93b2c" transform="rotate(-24 372 26)"/>
+<circle cx="372" cy="26" r="12" fill="#e14733" stroke="#8c231a" stroke-width="1.5"/>
+<path d="M366 17V35" stroke="#4a4a50" stroke-width="5" stroke-linecap="round"/>
+<circle cx="424" cy="66" r="12" fill="#d93b2c" stroke="#fff" stroke-width="2.5"/>
+<path d="M417 66H431" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+</svg>`;
 
-const CAR_BODY = `<svg class="car-body" viewBox="0 0 360 520" aria-hidden="true" focusable="false">
-<!-- flat ground shadow -->
-<g fill="#000" opacity=".16" transform="translate(-10 12)"><rect x="100" y="38" width="160" height="40" rx="4"/><rect x="100" y="462" width="160" height="40" rx="4"/><path d="M180 84L194 150Q226 196 238 240Q244 276 224 320L198 340V456H162V340L136 320Q116 276 122 240Q134 196 166 150Z"/></g>
-<!-- axles + wishbones -->
-<g stroke="#4b5163" stroke-linecap="round" fill="none"><path d="M116 150H244" stroke-width="9"/><path d="M112 372H248" stroke-width="9"/>
-<path d="M116 150L170 122M116 150L170 182M244 150L190 122M244 150L190 182M112 372L166 346M112 372L166 398M248 372L194 346M248 372L194 398" stroke-width="4" stroke="#6b7388"/></g>
-<!-- front wing -->
-<rect x="102" y="38" width="156" height="40" rx="4" fill="#f2643b"/>
-<rect x="110" y="46" width="140" height="6" rx="3" fill="#fff" opacity=".85"/>
-<rect x="110" y="62" width="140" height="8" rx="3" fill="#d4502a"/>
-<rect x="94" y="32" width="12" height="52" rx="4" fill="#14224f"/><rect x="254" y="32" width="12" height="52" rx="4" fill="#14224f"/>
-<!-- body: nose, flared cowl, engine cover -->
-<path d="M180 84L194 150Q226 196 238 240Q244 276 224 320L198 340V456H162V340L136 320Q116 276 122 240Q134 196 166 150Z" fill="#1b2d63"/>
-<path d="M180 84L194 150L198 190H162L166 150Z" fill="#f2643b"/>
-<path d="M180 92L186 150L184 196H176L174 150Z" fill="#ff9a73"/>
-<path d="M150 196Q130 232 138 276" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" opacity=".85"/>
-<path d="M210 196Q230 232 222 276" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" opacity=".85"/>
-<path d="M170 196Q180 188 190 196" fill="none" stroke="#2e4690" stroke-width="3"/>
-<!-- cockpit + helmet + halo -->
-<ellipse cx="180" cy="262" rx="22" ry="38" fill="#0b1330"/>
-<circle cx="180" cy="266" r="14" fill="#ff8a62"/>
-<path d="M172 262Q180 256 188 262V268Q180 272 172 268Z" fill="#0b1330"/>
-<circle cx="175" cy="259" r="3.2" fill="#fff" opacity=".8"/>
-<path d="M158 252Q158 224 180 220Q202 224 202 252" fill="none" stroke="#0b1330" stroke-width="7" stroke-linecap="round"/>
-<path d="M180 220V234" stroke="#0b1330" stroke-width="6" stroke-linecap="round"/>
-<!-- engine intake grid + stripes -->
-<rect x="162" y="344" width="36" height="62" rx="7" fill="#0b1330"/>
-<g fill="#4b5163"><circle cx="171" cy="356" r="5"/><circle cx="189" cy="356" r="5"/><circle cx="171" cy="371" r="5"/><circle cx="189" cy="371" r="5"/><circle cx="171" cy="386" r="5"/><circle cx="189" cy="386" r="5"/><circle cx="171" cy="400" r="0"/></g>
-<g fill="none" stroke="#f2643b" stroke-width="5" stroke-linecap="round"><path d="M164 330V456M196 330V456"/></g>
-<rect x="170" y="412" width="20" height="40" rx="6" fill="#f2643b"/>
-<!-- rear wing -->
-<rect x="100" y="462" width="160" height="40" rx="4" fill="#f2643b"/>
-<rect x="108" y="470" width="144" height="6" rx="3" fill="#fff" opacity=".85"/>
-<rect x="108" y="486" width="144" height="8" rx="3" fill="#d4502a"/>
-<rect x="92" y="456" width="12" height="52" rx="4" fill="#14224f"/><rect x="256" y="456" width="12" height="52" rx="4" fill="#14224f"/>
+const CAR_BODY = `<svg class="car-body" viewBox="0 0 440 400" aria-hidden="true" focusable="false">
+<path d="M62 184C122 156 205 156 262 180C288 190 304 202 334 202L410 205V213L334 212C304 212 288 224 262 234C205 258 122 258 62 230Z" fill="#000" opacity=".14"/>
+<path d="M104 138L130 184M104 138L172 178M104 262L130 216M104 262L172 222M315 138L262 188M315 138L286 196M315 262L262 212M315 262L286 204" stroke="#1d1d20" stroke-width="5" stroke-linecap="round" fill="none"/>
+<path d="M44 150H58V250H44Z" fill="#1d1d20"/>
+<path d="M20 172H46V198H20ZM20 202H46V228H20Z" fill="#f4f4f4"/>
+<path d="M8 177H20M8 223H20" stroke="#1d1d20" stroke-width="3"/>
+<path d="M58 168L215 148Q262 158 292 186V214Q262 242 215 252L58 232Z" fill="#232326"/>
+<path d="M58 178C120 152 205 150 262 176C282 186 296 194 318 196L408 197V203L318 204C296 206 282 214 262 224C205 250 120 248 58 222Z" fill="#d93b2c"/>
+<path d="M92 222L170 156H194L116 226Z" fill="#fff" opacity=".16"/><path d="M128 226L196 166H206L140 228Z" fill="#fff" opacity=".12"/>
+<path d="M70 200H300" stroke="#b92d21" stroke-width="3"/>
+<path d="M398 118L428 108Q436 112 436 126V274Q436 288 428 292L398 282Q410 200 398 118Z" fill="#1d1d20"/>
+<path d="M406 132Q416 200 406 268" stroke="#55555b" stroke-width="2" fill="none"/>
+<ellipse cx="205" cy="200" rx="34" ry="19" fill="#1a1a1d"/>
+<circle cx="204" cy="200" r="12" fill="#f4f4f4"/><circle cx="204" cy="200" r="12" fill="none" stroke="#e8a64c" stroke-width="3"/><path d="M196 200H212" stroke="#6b4a5a" stroke-width="3"/>
 </svg>`;
 
 function carHTML(interactive) {
   const tag = interactive ? 'button type="button"' : 'div', end = interactive ? 'button' : 'div';
   return CAR_BODY + WHEELS.map((w, i) =>
-    `<${tag} class="wheel ${w.dir < 0 ? 'wl' : 'wr'}" data-w="${i}" data-s="idle" style="left:${((w.cx - 50) / 3.6).toFixed(2)}%;top:${((w.cy - 50) / 5.2).toFixed(2)}%;--out:${w.dir * 40}px;--k:${i}">${wheelSVG(w.dir)}</${end}>`).join('');
+    `<${tag} class="wheel ${w.dir < 0 ? 'wl' : 'wr'}" data-w="${i}" data-s="idle" style="left:${((w.cx - 50) / 4.4).toFixed(2)}%;top:${((w.cy - 50) / 4).toFixed(2)}%;--out:${w.dir * 40}px;--k:${i}">${wheelSVG(w.dir)}</${end}>`).join('');
 }
 const chev = n => { const h = 12 + (n - 1) * 11, top = (48 - h) / 2; let p = ''; for (let i = 0; i < n; i++) { const y = top + 12 + i * 11; p += `<path d="M10 ${y}L24 ${y - 12}L38 ${y}"/>`; } return `<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">${p}</svg>`; };
 
@@ -1062,9 +1142,9 @@ function arrive() {
   const dur = RM.matches ? 60 : 1250;
   wc(carWrap, true); SFX.whoosh(); vib(16);
   const a = anim(carWrap, [
-    { transform: 'translateY(118%)', easing: 'cubic-bezier(.12,.8,.2,1)' },
-    { transform: 'translateY(-3.2%)', offset: .72, easing: 'cubic-bezier(.4,0,.2,1)' },
-    { transform: 'translateY(0)' }], { duration: dur, fill: 'forwards' });
+    { transform: 'translateX(-118%)', easing: 'cubic-bezier(.12,.8,.2,1)' },
+    { transform: 'translateX(3.2%)', offset: .72, easing: 'cubic-bezier(.4,0,.2,1)' },
+    { transform: 'translateX(0)' }], { duration: dur, fill: 'forwards' });
   const done = () => { carWrap.style.transform = 'none'; if (a) a.cancel(); wc(carWrap, false); };
   if (a) a.onfinish = done; else done();
   anim(camera, [{ transform: 'scale(1.07) translateY(10px)' }, { transform: 'scale(1) translateY(0)' }], { duration: RM.matches ? 1 : 800, delay: RM.matches ? 0 : dur * .62, easing: E_OUT, fill: 'both' });
@@ -1182,8 +1262,8 @@ function goDown(e) {
   SFX.good(G.reactionMs); vib([20, 30, 60]);
   banner(t('bReaction', { s: fmt(G.reactionMs) }), 1300); say(t('bReaction', { s: fmt(G.reactionMs) }));
   wc(carWrap, true); wc(streaks, true);
-  anim(carWrap, [{ transform: 'translateY(0) scale(1)' }, { transform: 'translateY(3%) scale(.99)', offset: .14 }, { transform: 'translateY(-150%) scale(1.04)' }], { duration: RM.matches ? 1 : 1050, delay: 60, easing: 'cubic-bezier(.5,0,.85,.3)', fill: 'forwards' });
-  anim(streaks, [{ opacity: 0, transform: 'translateY(-12%)' }, { opacity: .9, transform: 'translateY(2%)', offset: .35 }, { opacity: 0, transform: 'translateY(14%)' }], { duration: 800, delay: 120, easing: 'linear' });
+  anim(carWrap, [{ transform: 'translateX(0) scale(1)' }, { transform: 'translateX(-3%) scale(.99)', offset: .14 }, { transform: 'translateX(150%) scale(1.04)' }], { duration: RM.matches ? 1 : 1050, delay: 60, easing: 'cubic-bezier(.5,0,.85,.3)', fill: 'forwards' });
+  anim(streaks, [{ opacity: 0, transform: 'translateX(-14%)' }, { opacity: .9, transform: 'translateX(2%)', offset: .35 }, { opacity: 0, transform: 'translateX(14%)' }], { duration: 800, delay: 120, easing: 'linear' });
   if (!RM.matches) anim(camera, [{ transform: 'scale(1)' }, { transform: 'scale(1.07)' }], { duration: 1100, delay: 60, easing: E_IN });
   later(220, () => SFX.whoosh());
   recordRound(false); later(1700, showResult);
