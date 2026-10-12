@@ -110,9 +110,9 @@ body[data-screen=game] #btnLang{opacity:0;visibility:hidden;pointer-events:none}
    ===================================================================== */
 #screens{position:relative;flex:1;min-height:0}
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(16px);
-  transition:opacity .25s var(--out),transform .35s var(--out),visibility 0s .35s}
+  transition:opacity .14s linear,transform .35s var(--out),visibility 0s .14s}
 .screen.active{opacity:1;visibility:visible;pointer-events:auto;transform:none;
-  transition:opacity .3s var(--out),transform .4s var(--out),visibility 0s}
+  transition:opacity .25s var(--out) .14s,transform .4s var(--out) .14s,visibility 0s}
 @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 .screen.active .st{animation:rise .5s var(--out) backwards;animation-delay:calc(var(--i,0) * 70ms + 90ms)}
 
@@ -285,8 +285,8 @@ div.wheel{pointer-events:none}
 .wheel[data-s=tighten] .crew{animation:crewIn .62s cubic-bezier(.3,.8,.3,1) forwards}
 .wheel[data-s=done] .crew{animation:crewOut .42s ease-in forwards}
 .wheel[data-s=tighten] .held{animation:heldA .62s steps(1,end) forwards}
-@keyframes crewIn{0%{transform:translateX(-150px);opacity:0}18%{opacity:1}42%{transform:translateX(-84px);opacity:1}100%{transform:translateX(-52px);opacity:1}}
-@keyframes crewOut{0%{transform:translateX(-52px);opacity:1}100%{transform:translateX(-150px);opacity:0}}
+@keyframes crewIn{0%{transform:translateX(-94px);opacity:0}18%{opacity:1}42%{transform:translateX(-52px);opacity:1}100%{transform:translateX(-32px);opacity:1}}
+@keyframes crewOut{0%{transform:translateX(-32px);opacity:1}100%{transform:translateX(-94px);opacity:0}}
 @keyframes heldA{0%,40%{opacity:0}41%,80%{opacity:1}81%,100%{opacity:0}}
 .tyre-n{fill:#06080e;stroke:#34406a;stroke-width:3}
 .tread{stroke:#1c2133;stroke-width:5;fill:none}.band{fill:var(--accent);opacity:.95}
@@ -295,6 +295,14 @@ div.wheel{pointer-events:none}
 .wheel[data-s=done] .tread{animation:treadspin .16s linear 6}
 .wheel .w-ring{stroke-width:3.5}.wheel .nut{fill:#e6ecf8}
 @media (prefers-reduced-motion:reduce){.wheel .tread{animation:none !important}}
+/* swap: tyre rolls in from the floor, nut spins down, new tyre seats with a squash, crew leans on the gun */
+.wheel[data-s=tighten] .floor-tyre,.wheel[data-s=done] .floor-tyre{transform:translateX(78px) rotate(300deg);opacity:0;transition:transform .26s cubic-bezier(.5,0,.8,.45),opacity .06s linear .22s}
+.wheel[data-s=tighten] .w-nut{transform:rotate(-270deg) scale(1.2);transition:transform .34s var(--out),opacity .2s}
+.wheel[data-s=done] .w-nut{transform:rotate(-360deg)}
+@keyframes seat{0%{opacity:0;transform:scale(1.45) rotate(-40deg)}35%{opacity:1;transform:scale(.9)}65%{transform:scale(1.05)}100%{opacity:1;transform:none}}
+.wheel[data-s=tighten] .w-new,.wheel[data-s=done] .w-new{opacity:1;transform:none;transition:none;animation:seat .42s cubic-bezier(.3,.7,.3,1) .5s backwards}
+@keyframes crewWork{0%,100%{transform:translate(-32px,0)}50%{transform:translate(-32px,1px)}}
+.wheel[data-s=tighten] .crew{animation:crewIn .62s cubic-bezier(.3,.8,.3,1) forwards,crewWork .1s linear .62s infinite}
 /* flat grey pit lane like the reference */
 #stage{background:#c4c9d0 !important}
 .pitbox rect{stroke:#fff !important;stroke-width:5 !important;stroke-dasharray:none !important;fill:none !important}
@@ -334,9 +342,9 @@ div.wheel{pointer-events:none}
   background:radial-gradient(circle at 50% 36%,#fff2c9,#ffc94d 38%,#ff9a00 78%);
   box-shadow:0 0 0 8px rgb(255 176 32 / .18),0 0 60px 10px rgb(255 154 0 / .55)}
 .cd.show{opacity:1;visibility:visible}
-.cd.go{color:#04130c;font-size:clamp(28px,7vmin,54px);background:radial-gradient(circle at 50% 36%,#eafff6,var(--accent2) 60%,var(--accent) 100%);
+.cd.cdgo{color:#04130c;font-size:clamp(28px,7vmin,54px);background:radial-gradient(circle at 50% 36%,#eafff6,var(--accent2) 60%,var(--accent) 100%);
   box-shadow:0 0 0 8px rgb(var(--accent2-rgb) / .22),0 0 60px 10px rgb(var(--accent2-rgb) / .5)}
-@supports (width:1cqw){.cd{font-size:28cqw}.cd.go{font-size:14cqw}}
+@supports (width:1cqw){.cd{font-size:28cqw}.cd.cdgo{font-size:14cqw}}
 .banner{position:absolute;left:0;right:0;top:18%;margin-inline:auto;width:fit-content;max-width:94%;padding:10px 18px;border-radius:16px;z-index:7;
   background:rgb(5 8 7 / .94);border:1.5px solid var(--accent2);font:800 clamp(20px,5vmin,34px)/1.1 var(--f-display);display:flex;align-items:center;gap:10px;opacity:0;pointer-events:none}
 .banner b{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--accent2);color:#04130c;font-size:18px;flex:none}
@@ -348,7 +356,7 @@ div.wheel{pointer-events:none}
 .banner{background:var(--cream);color:var(--deep);border:3px solid var(--deep);box-shadow:0 5px 0 var(--deep);border-radius:18px;padding:10px 16px 11px;white-space:nowrap;font:800 clamp(18px,4.6vmin,30px)/1.1 var(--f-display)}
 .banner b{background:var(--accent);color:#fff;border:2px solid var(--deep);width:28px;height:28px;font:800 18px/1 var(--f-display)}
 .cd{color:var(--deep)}
-.cd.go{color:#fff;text-shadow:0 3px 0 var(--deep)}
+.cd.cdgo{color:#fff;text-shadow:0 3px 0 var(--deep)}
 
 /* footer: coaching bubble during service, GO during launch */
 #foot{position:relative;flex:none;height:clamp(92px,15vh,150px);margin-top:6px}
@@ -401,36 +409,6 @@ div.wheel{pointer-events:none}
 .res-right{display:flex;flex-direction:column}
 
 /* lead card */
-.field{display:block;margin-top:14px}
-.field>span{display:block;font:700 14px/1.2 var(--f-text);color:var(--ink2);margin-bottom:6px}
-.field input{width:100%;min-height:56px;padding:0 16px;border-radius:16px;border:2.5px solid var(--deep);background:#fff;color:var(--deep);font:700 18px/1 var(--f-text);transition:box-shadow .15s}
-.field input:focus{outline:none;box-shadow:0 0 0 4px rgb(var(--accent-rgb) / .45)}
-.field input[aria-invalid=true]{border-color:#B3261E}
-fieldset{border:0;margin-top:16px;min-width:0}
-legend{font:700 14px/1.2 var(--f-text);color:var(--ink2);margin-bottom:8px;padding:0}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{position:relative;display:block}
-.chip input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
-.pill{display:flex;align-items:center;gap:8px;min-height:56px;padding:0 18px;border-radius:28px;border:2.5px solid var(--deep);background:#fff;color:var(--deep);
-  font:800 17px/1 var(--f-text);transition:background .15s,color .15s,transform .35s var(--spring)}
-.tick{width:22px;height:22px;flex:none;border-radius:50%;border:2.5px solid var(--deep);background:#fff;display:grid;place-items:center;transition:background .15s}
-.tick svg{width:13px;height:13px;opacity:0;transform:scale(.4);transition:opacity .12s,transform .3s var(--spring)}
-.chip input:checked + .pill{background:var(--accent);color:#fff}
-.chip input:checked + .pill .tick,.consent input:checked ~ .tick{background:var(--cream)}
-.chip input:checked + .pill .tick svg,.consent input:checked ~ .tick svg{opacity:1;transform:none}
-.chip input:focus-visible + .pill,.consent input:focus-visible ~ .cbg{outline:3px solid var(--deep);outline-offset:3px}
-.chip input:active + .pill{transform:scale(.96)}
-.consent{position:relative;isolation:isolate;display:flex;gap:12px;align-items:flex-start;margin-top:16px;min-height:56px;padding:12px 14px;border-radius:16px;font:600 15px/1.4 var(--f-text)}
-.consent input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;z-index:2}
-.cbg{position:absolute;inset:0;z-index:-1;border-radius:16px;border:2.5px solid var(--deep);background:#fff;transition:background .15s}
-.consent input:checked ~ .cbg{background:rgb(var(--accent-rgb) / .2)}
-.consent .tick{margin-top:1px}
-.privacy{margin-top:10px;font:600 13px/1.4 var(--f-text);color:var(--ink2)}
-.err{min-height:22px;margin-top:8px;font:700 15px/1.3 var(--f-text);color:#8A1C12;display:flex;gap:8px;align-items:flex-start}
-.err:not(:empty)::before{content:"!";flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:#B3261E;color:#fff;font:800 14px/1 var(--f-text)}
-.actions{display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;align-items:center}
-.actions .cta{flex:1 1 180px}
-.saved{margin-bottom:12px;font:800 16px/1.3 var(--f-text);color:var(--accent-d)}
 .board-card h3{margin-bottom:10px}
 .board-card .cta{width:100%;margin-top:18px}
 .reset-note{position:absolute;left:0;right:0;bottom:calc(var(--sb) + 12px);text-align:center;font:800 14px/1.3 var(--f-text);color:var(--deep);opacity:0;pointer-events:none;transition:opacity .3s}
@@ -458,6 +436,91 @@ legend{font:700 14px/1.2 var(--f-text);color:var(--ink2);margin-bottom:8px;paddi
   *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;animation-delay:0s !important;transition-duration:.001ms !important;transition-delay:0s !important}
   .hero-car{animation:none}
 }
+
+/* =====================================================================
+   PIT BOX v2: landscape, top-down, car nose right (artwork-faithful),
+   Sakhir scene, clean game layout for phone and desktop
+   ===================================================================== */
+#stage{width:auto;height:min(100cqh,125cqw,540px);aspect-ratio:360/447;background:#bcbcc0 !important}
+.wheel,.float{width:20%}
+.wheel{height:16.1%}
+.pitbox g{display:inline}
+.pitbox{z-index:0}
+.tyre-n{fill:#161618;stroke:#3c3c40}
+.tread{stroke:#8d8d93;stroke-width:4;stroke-dasharray:none}
+.band,.rim-n,.fl-spk,.fl-hi{display:none}
+.fl-tyre{fill:#18181a}.fl-rim{fill:#8a8a90}.fl-band{stroke:#2a2a2d}.fl-hub{fill:#4a4a50}
+.w-axle rect,.ax-hub{fill:#26262a}.ax-hub{stroke:#26262a}
+.crew .c-suit,.crew .c-arm{fill:#d93b2c}.crew .c-str{stroke:#4a4a50}.crew .c-glove{fill:#6b4a5a}
+.crew .c-helm{fill:#e14733;stroke:#8c231a;stroke-width:1.5}.crew .c-band{fill:#4a4a50}
+.held rect{fill:#161618;stroke:#8d8d93}.held .hb{fill:#8d8d93}
+
+/* HUD: label no longer collides with the badge outline */
+.badge{padding:15px 20px 14px}
+#timer{font:800 clamp(40px,8vmin,64px)/1 var(--f-num)}
+.b-timer{min-width:clamp(150px,36vw,230px)}
+#hud{align-items:flex-start}
+
+/* footer: lights bar, then coaching bubble / GO share one cell */
+#foot{height:auto;margin:0 auto;width:100%;max-width:560px;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(104px,auto);row-gap:12px;justify-items:center}
+#foot .stage-gantry{position:relative;left:auto;right:auto;top:auto;width:min(100%,380px);grid-area:1/1;z-index:1;
+  opacity:.6;transform:scale(.96);transition:transform .45s var(--spring),opacity .25s linear}
+#foot .stage-gantry.in{opacity:1;transform:none}
+.gantry .lamp{width:auto;flex:0 1 clamp(30px,5vmin,52px);min-width:0}
+.hero .gantry{width:auto;max-width:92%}
+#foot .prompt,#foot .go{position:relative;inset:auto;margin:0;top:auto;grid-area:2/1;width:100%;min-height:96px}
+#foot .prompt{align-self:stretch}
+#foot .go{padding:12px 20px 14px}
+#sGame[data-phase=launch] .go:not(.live){outline-offset:-7px}
+.go-main{font:800 clamp(30px,6vmin,52px)/1.05 var(--f-display)}
+
+/* start screen proportions */
+.title{font-size:clamp(48px,11vmin,104px)}
+#sStart{gap:10px}
+
+/* phones: keep clear of the host's corner badge */
+@media (max-width:640px){#sGame,#sStart{padding-bottom:calc(var(--sb) + 56px)}}
+
+/* wide screens: timer left of the pit box, wheels + penalty right */
+@media (min-width:900px) and (min-aspect-ratio:5/4){
+  #sGame{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;column-gap:28px}
+  #hud{display:contents}
+  .b-timer{grid-column:1;grid-row:1;justify-self:end;margin-top:16px}
+  .hud-right{grid-column:3;grid-row:1;justify-self:start;align-items:flex-start;margin-top:16px}
+  #stageWrap{grid-column:2;grid-row:1;width:min(60vw,calc((100vh - 330px) * .805),435px)}
+  #foot{grid-column:1/-1;grid-row:2}
+}
+
+/* review fixes */
+#foot .stage-gantry{opacity:1}
+.hero .gantry{width:min(78vw,300px);max-width:none}
+#hud{flex-wrap:nowrap;gap:8px}
+.b-timer{min-width:0;flex:1 1 auto;max-width:230px}
+#timer{font-size:clamp(36px,10vw,64px)}
+@media (min-width:900px) and (min-aspect-ratio:5/4){#sGame{padding-bottom:calc(var(--sb) + 28px)}#timer{font-size:clamp(40px,6vmin,64px)}.b-timer,.hud-right{align-self:start}}
+
+/* penalty chip rides on the timer badge; result + short-screen polish */
+.b-timer{position:relative}
+.badge>.b-pen{position:absolute;top:8px;inset-inline-end:12px;display:flex;align-items:center;margin:0;padding:3px 10px 4px;border-radius:99px;
+  background:var(--accent);border:2px solid var(--cream);opacity:0;transform:scale(.8);transition:opacity .2s,transform .35s var(--spring)}
+.badge>.b-pen.on{opacity:1;transform:none}
+.b-pen .b-label{display:none}
+.b-pen .num{font-size:15px;color:#fff}
+.res-scroll{padding-top:22px}
+.res-time{font-size:clamp(60px,14vmin,112px);padding-inline:34px}
+@media (max-height:720px){body[data-screen=game] #concept{display:none}#foot{grid-template-rows:auto minmax(88px,auto)}#foot .prompt,#foot .go{min-height:88px}.go-main{font-size:30px}}
+
+/* name entry on the start screen */
+.name-box{width:min(100%,380px)}
+.name-box input{width:100%;min-height:60px;padding:0 18px;border-radius:20px;border:3px solid var(--deep);background:var(--cream);color:var(--deep);
+  box-shadow:0 5px 0 var(--deep);font:800 22px/1 var(--f-text);text-align:center;-webkit-user-select:text;user-select:text}
+.name-box input::placeholder{color:rgb(var(--deep-rgb) / .5)}
+.name-box input:focus{outline:none;box-shadow:0 5px 0 var(--deep),0 0 0 5px rgb(var(--accent2-rgb) / .8)}
+.name-box input[aria-invalid=true]{border-color:#B3261E}
+.name-msg{min-height:22px;margin-top:10px;font:800 15px/1.3 var(--f-text);color:#fff;text-shadow:0 1px 0 var(--deep),0 -1px 0 var(--deep),1px 0 0 var(--deep),-1px 0 0 var(--deep)}
+.board-card .ghost{margin-top:12px;width:100%}
+.name-note{margin-top:8px;font:700 13px/1.35 var(--f-text);color:var(--deep);text-align:center}
+.name-msg{margin-top:4px}
 </style>
 </head>
 
@@ -475,26 +538,37 @@ legend{font:700 14px/1.2 var(--f-text);color:var(--ink2);margin-bottom:8px;paddi
   </defs>
 </svg>
 
-<!-- original illustrated street scene (generic towers, sand-coloured arch buildings, palms). No real landmarks, logos or brand marks. -->
+<!-- Sakhir circuit scene: original illustration of the Bahrain International Circuit tower (flag, tiered tower, tent roof), grandstand, kerbs and palms. -->
 <div id="scene" aria-hidden="true">
-<svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMax slice" focusable="false">
+<svg viewBox="0 0 800 220" preserveAspectRatio="xMidYMax slice" focusable="false">
   <defs>
     <radialGradient id="gSun"><stop offset="0" stop-color="#FFF8DC"/><stop offset="1" stop-color="#FFF8DC" stop-opacity="0"/></radialGradient>
-    <g id="bA"><rect width="54" height="52" fill="#EBCFA2"/><rect width="54" height="6" fill="#D2A872"/><rect x="6" y="14" width="42" height="7" rx="2" fill="#D9B27D"/><path d="M8 52V34a5 5 0 0 1 10 0V52zM22 52V34a5 5 0 0 1 10 0V52zM36 52V34a5 5 0 0 1 10 0V52z" fill="#A8703F"/></g>
-    <g id="bB"><rect width="40" height="78" fill="#E3C08C"/><rect width="40" height="6" fill="#C99A63"/><path d="M6 78V62a5 5 0 0 1 10 0V78zM24 78V62a5 5 0 0 1 10 0V78zM6 52V36a5 5 0 0 1 10 0V52zM24 52V36a5 5 0 0 1 10 0V52zM6 28V16a5 5 0 0 1 10 0V28zM24 28V16a5 5 0 0 1 10 0V28z" fill="#A8703F"/></g>
-    <g id="bC"><rect x="12" y="-14" width="6" height="14" fill="#6C93A4"/><rect width="30" height="100" fill="#6C93A4"/><path d="M0 14H30M0 28H30M0 42H30M0 56H30M0 70H30M0 84H30M10 0V100M20 0V100" stroke="#8FB3C2" stroke-width="1.2" fill="none"/></g>
     <g id="palm"><path d="M0 0C5-24 0-48 8-74" fill="none" stroke="#8B5E34" stroke-width="5" stroke-linecap="round"/>
       <g fill="#2F9158"><path d="M8-74C26-92 48-86 58-70C42-78 26-78 8-74z"/><path d="M8-74C-10-92-32-86-42-70C-26-78-10-78 8-74z"/><path d="M8-74C20-98 34-104 50-100C38-96 24-90 8-74z"/><path d="M8-74C-4-98-18-104-34-100C-22-96-8-90 8-74z"/></g>
       <g fill="#25774A"><path d="M8-74C30-80 52-70 60-52C44-64 26-68 8-74z"/><path d="M8-74C-14-80-36-70-44-52C-28-64-10-68 8-74z"/><path d="M8-74C8-96 12-108 20-114C14-100 12-88 8-74z"/></g></g>
+    <g id="stand"><rect y="-24" width="120" height="24" fill="#B9A98F"/><path d="M0-24H120V-30H0z" fill="#8D7D66"/>
+      <path d="M-4-30L124-30L116-44H4z" fill="#F4F1EA"/><path d="M0 -17H120M0-10H120" stroke="#CE1126" stroke-width="3" opacity=".75"/>
+      <path d="M8-30V0M40-30V0M72-30V0M104-30V0" stroke="#8D7D66" stroke-width="2"/></g>
   </defs>
-  <circle cx="318" cy="64" r="84" fill="url(#gSun)"/>
-  <path fill="#A8CFD6" opacity=".9" d="M0 170h22v-34h14v34h10v-52h8v52h18v-40h12v40h14v-70h6v70h14v-30h20v30h16v-58h10v58h12v-36h16v36h18v-48h8v48h14v-28h20v28h12v-62h6v62h16v-32h14v32h22v-44h10v44h12V200H0z"/>
-  <use href="#bA" x="6" y="138"/><use href="#bB" x="64" y="112"/><use href="#bC" x="112" y="90"/><use href="#bA" x="150" y="138"/>
-  <use href="#bB" x="212" y="112"/><use href="#bC" x="262" y="90"/><use href="#bA" x="300" y="138"/><use href="#bB" x="362" y="112"/>
-  <path d="M196 190V118" stroke="#5a4630" stroke-width="2"/><path d="M196 120h28l-6 8 6 8h-28z" style="fill:var(--accent)"/>
-  <use href="#palm" transform="translate(40 198) scale(1.15)"/><use href="#palm" transform="translate(178 200) scale(.95)"/>
-  <use href="#palm" transform="translate(286 198) scale(1.2)"/><use href="#palm" transform="translate(376 200) scale(.9)"/>
-  <rect y="190" width="400" height="30" fill="#EBCB9A"/><rect y="190" width="400" height="4" fill="#FFF6E5"/>
+  <circle cx="190" cy="62" r="84" fill="url(#gSun)"/>
+  <path fill="#B7D2DA" opacity=".9" d="M0 190V160C60 140 110 150 170 156C240 120 300 128 360 150C430 134 500 140 560 154C640 132 720 142 800 158V190Z"/>
+  <path fill="#E7C998" d="M0 190V176C120 158 260 168 380 176C520 164 680 170 800 178V190Z"/>
+  <use href="#stand" x="120" y="190"/><use href="#stand" x="640" y="190"/>
+  <g transform="translate(540 190)">
+    <rect x="-28" y="-13" width="56" height="13" fill="#EAE5D9"/><rect x="-28" y="-10" width="56" height="6" fill="#7C97A6"/><rect x="-28" y="-26" width="56" height="13" fill="#EAE5D9"/><rect x="-28" y="-23" width="56" height="6" fill="#7C97A6"/><rect x="-28" y="-39" width="56" height="13" fill="#EAE5D9"/><rect x="-28" y="-36" width="56" height="6" fill="#7C97A6"/><rect x="-28" y="-52" width="56" height="13" fill="#EAE5D9"/><rect x="-28" y="-49" width="56" height="6" fill="#7C97A6"/><rect x="-28" y="-65" width="56" height="13" fill="#EAE5D9"/><rect x="-28" y="-62" width="56" height="6" fill="#7C97A6"/><rect x="-28" y="-78" width="56" height="13" fill="#EAE5D9"/><rect x="-28" y="-75" width="56" height="6" fill="#7C97A6"/><rect x="-28" y="-91" width="56" height="13" fill="#EAE5D9"/><rect x="-28" y="-88" width="56" height="6" fill="#7C97A6"/>
+    <rect x="-34" y="-97" width="68" height="6" fill="#CFC8BA"/>
+    <rect x="12" y="-91" width="16" height="91" fill="#000" opacity=".1"/>
+    <path d="M-38-97H38L48-112H-48Z" fill="#C9824A"/>
+    <path d="M-44 -112L-36 -132L-28 -112Z" fill="#FFFDF7"/><path d="M-26 -112L-18 -142L-10 -112Z" fill="#FFFDF7"/><path d="M-8 -112L0 -152L8 -112Z" fill="#FFFDF7"/><path d="M10 -112L18 -142L26 -112Z" fill="#FFFDF7"/><path d="M28 -112L36 -132L44 -112Z" fill="#FFFDF7"/>
+    <path d="M0-150V-174" stroke="#5a4630" stroke-width="2.5"/>
+    <path d="M0 -174H26V-156H0Z" fill="#CE1126"/><path d="M0 -174H8L12 -170.4L8 -166.8L12 -163.2L8 -159.6L12 -156H0Z" fill="#fff"/>
+  </g>
+  <use href="#palm" transform="translate(40 198) scale(1.15)"/><use href="#palm" transform="translate(330 200) scale(.95)"/>
+  <use href="#palm" transform="translate(760 198) scale(1.2)"/><use href="#palm" transform="translate(440 200) scale(.8)"/>
+  <rect y="190" width="800" height="30" fill="#EBCB9A"/>
+  <rect y="190" width="800" height="14" fill="#9A9CA2"/>
+  <path d="M0 197H800" stroke="#fff" stroke-width="2" stroke-dasharray="18 14" opacity=".8"/>
+  <path d="M0 207H800" stroke="#fff" stroke-width="5"/><path d="M0 207H800" stroke="#CE1126" stroke-width="5" stroke-dasharray="16 16"/>
 </svg>
 </div>
 
@@ -529,6 +603,12 @@ legend{font:700 14px/1.2 var(--f-text);color:var(--ink2);margin-bottom:8px;paddi
       <div class="copy">
         <h1 id="ttl" class="title outlined st" style="--i:1"><span id="t1"></span><span id="t2"></span></h1>
         <p id="eventLine" class="event st" style="--i:2"></p>
+        <div class="name-box st" style="--i:3">
+          <label class="sr" for="playerName" data-i="fName"></label>
+          <input id="playerName" type="text" maxlength="24" autocomplete="off" autocapitalize="words" enterkeyhint="go">
+          <p class="name-note" data-i="nameNote"></p>
+          <p class="name-msg" id="nameMsg" role="alert"></p>
+        </div>
         <button id="btnStart" class="cta idle pressable st" type="button" style="--i:3"><span class="face" data-i="start"></span></button>
         <p class="prize st" style="--i:4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="14" r="7.5"/><path d="M12 14v-4M9.5 2.5h5M12 6.5v-4"/></svg><span id="prizeTxt"></span></p>
       </div>
@@ -544,23 +624,23 @@ legend{font:700 14px/1.2 var(--f-text);color:var(--ink2);margin-bottom:8px;paddi
         <div class="badge b-timer">
           <span class="b-label" data-i="hTime"></span>
           <div id="timer" class="ltr" dir="ltr" aria-hidden="true"><span id="tVal">0.000</span><small class="unit"></small></div>
+          <div id="pen" class="b-pen" aria-hidden="true"><span class="b-label" data-i="penLabel"></span><span id="penTxt" class="num ltr"></span></div>
         </div>
         <div class="hud-right">
           <div class="badge b-wheels"><span class="b-label" data-i="hWheels"></span><div class="pips" id="pips" aria-hidden="true"></div></div>
-          <div id="pen" class="badge b-pen" aria-hidden="true"><span class="b-label" data-i="penLabel"></span><span id="penTxt" class="num ltr"></span></div>
         </div>
       </div>
       <div id="stageWrap">
         <div id="stage">
           <div id="camera"></div>
           <div id="streaks"></div>
-          <div id="gantry" class="gantry stage-gantry" aria-hidden="true"></div>
           <div id="cd" class="cd" aria-hidden="true"></div>
           <div id="banner" class="banner" aria-hidden="true"><b>!</b><span id="bannerTxt"></span></div>
           <div id="flash"></div>
         </div>
       </div>
       <div id="foot">
+        <div id="gantry" class="gantry stage-gantry" aria-hidden="true"></div>
         <p id="prompt" class="prompt" aria-hidden="true"></p>
         <button id="btnGo" class="go" type="button"><span class="go-main" id="goMain"></span><span class="go-sub" id="goSub"></span></button>
       </div>
@@ -584,30 +664,11 @@ legend{font:700 14px/1.2 var(--f-text);color:var(--ink2);margin-bottom:8px;paddi
           </dl>
         </div>
         <div class="res-right st" style="--i:4">
-          <form id="lead" class="card" novalidate autocomplete="off">
-            <h3 data-i="leadTitle"></h3>
-            <p class="sub" data-i="leadSub"></p>
-            <label class="field"><span data-i="fName"></span><input id="fName" type="text" maxlength="40" autocomplete="off" autocapitalize="words" enterkeyhint="next"></label>
-            <label class="field"><span data-i="fPhone"></span><input id="fPhone" type="tel" inputmode="tel" maxlength="20" autocomplete="off" dir="ltr" enterkeyhint="done"></label>
-            <fieldset><legend data-i="fInterest"></legend><div class="chips" id="chips"></div></fieldset>
-            <label class="consent">
-              <input type="checkbox" id="fConsent">
-              <span class="cbg"></span>
-              <span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#032519" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
-              <span id="consentText"></span>
-            </label>
-            <p class="privacy" id="privacy"></p>
-            <p class="err" id="formErr" role="alert"></p>
-            <div class="actions">
-              <button type="submit" class="cta sm pressable"><span class="face" data-i="save"></span></button>
-              <button type="button" id="btnSkip" class="ghost pressable" data-i="skip"></button>
-            </div>
-          </form>
-          <div id="board" class="card board-card" hidden>
-            <p id="savedNote" class="saved" hidden></p>
+          <div id="board" class="card board-card">
             <h3 data-i="boardTitle"></h3>
             <ol id="boardList" class="board"></ol>
             <button id="btnAgain" type="button" class="cta pressable"><span class="face" data-i="again"></span></button>
+            <button id="btnNext" type="button" class="ghost pressable" data-i="next"></button>
           </div>
         </div>
       </div>
@@ -621,7 +682,6 @@ legend{font:700 14px/1.2 var(--f-text);color:var(--ink2);margin-bottom:8px;paddi
   <div class="card adm" role="dialog" aria-modal="true" aria-labelledby="admTitle">
     <h2 id="admTitle" data-i="admTitle"></h2>
     <p id="admStats"></p>
-    <button id="admLeads" class="btn pressable" type="button" data-i="admLeads"></button>
     <button id="admScores" class="btn pressable" type="button" data-i="admScores"></button>
     <button id="admClear" class="btn warn pressable" type="button" data-i="admClear"></button>
     <button id="admClose" class="ghost pressable" type="button" data-i="admClose"></button>
@@ -655,7 +715,6 @@ const CONFIG = {
   penalties:     { wrongTap: 0.3, falseStart: 1.0 },   // seconds
   launch:        { lampIntervalMs: 420, minDelayMs: 800, maxDelayMs: 2200 },
   tiers:         { champion: 6.0, racer: 8.5 },        // total seconds: <= champion, <= racer, else driver
-  interests:     ['accounts', 'financing', 'cards'],   // each needs i18n keys int_<name>
   leaderboardSize: 5,
   kioskResetSeconds: 30,                   // inactivity reset on the result screen
   adminHoldMs:   3000,                     // long-press on wordmark
@@ -667,7 +726,7 @@ const CONFIG = {
    ===================================================================== */
 const I18N = {
   en: {
-    concept:'Concept demo', start:'Start', hTime:'Time', hWheels:'Wheels', top5:"Today's top 5", noTimes:'No times yet today. Set the first one.',
+    concept:'Concept demo', start:'Start', namePh:'Your name', nameNote:"Your first name appears on today's leaderboard.", next:'New player', hTime:'Time', hWheels:'Wheels', top5:"Today's top 5", noTimes:'No times yet today. Set the first one.',
     guest:'Guest', you:'You', unit:'s', logo:'Logo',
     muteOn:'Mute sound', muteOff:'Turn sound on', langLabel:'Switch language to Arabic', langBtn:'العربية',
     title1:'Pit Stop', title2:'Challenge',
@@ -681,21 +740,13 @@ const I18N = {
     tier_driver:'Driver', tier_racer:'Racer', tier_champion:'Champion',
     tag_driver:'Solid stop. Go again and cut your time.', tag_racer:'Quick hands. A strong, race-ready stop.', tag_champion:'Flawless pace. A top-of-the-board time.',
     rankLine:'Rank {n} of {m} today', dnfNote:"Time's up. This round isn't ranked.",
-    leadTitle:'Want us to follow up?', leadSub:'Optional. Your time counts either way.',
-    fName:'Name', fPhone:'Phone number', fInterest:'Interested in:',
-    int_accounts:'Accounts', int_financing:'Financing', int_cards:'Cards',
-    consent:'I agree that {sponsor} may contact me on these details about the products I selected.',
-    privacy:"Stored on this device only, for event follow-up. Your first name may appear on today's leaderboard.",
-    save:'Save my details', skip:'Skip',
-    errName:'Enter your name (at least 2 characters).', errPhone:'Enter a valid phone number (8 to 15 digits).',
-    errConsent:'Tick the box to agree before saving.', errSave:"Couldn't save on this device.",
-    saved:'Saved. Thank you.', boardTitle:"Today's leaderboard", again:'Play again', resetIn:'Returning to start in {s} s',
-    admTitle:'Admin', admLeads:'Export leads (CSV)', admScores:'Export scores (CSV)', admClear:'Clear all data',
-    admConfirm:'Tap again to confirm', admClose:'Close', admStats:'{l} leads, {s} scores', admCleared:'Data cleared.', admNone:'Nothing to export yet.',
+    fName:'Name', errName:'Enter your name (at least 2 characters).', boardTitle:"Today's leaderboard", again:'Play again', resetIn:'Returning to start in {s} s',
+    admTitle:'Admin', admScores:'Export scores (CSV)', admClear:'Clear all data',
+    admConfirm:'Tap again to confirm', admClose:'Close', admStats:'{s} scores', admCleared:'Data cleared.', admNone:'Nothing to export yet.',
     w_fl:'Front left wheel', w_fr:'Front right wheel', w_rr:'Rear right wheel', w_rl:'Rear left wheel'
   },
   ar: {
-    concept:'نموذج تجريبي', start:'ابدأ', hTime:'الوقت', hWheels:'العجلات', top5:'أفضل 5 أزمنة اليوم', noTimes:'لا توجد أزمنة اليوم بعد. كن صاحب أول زمن.',
+    concept:'نموذج تجريبي', start:'ابدأ', namePh:'اسمك', nameNote:'يظهر اسمك الأول في لائحة اليوم.', next:'لاعب جديد', hTime:'الوقت', hWheels:'العجلات', top5:'أفضل 5 أزمنة اليوم', noTimes:'لا توجد أزمنة اليوم بعد. كن صاحب أول زمن.',
     guest:'ضيف', you:'أنت', unit:'ث', logo:'الشعار',
     muteOn:'كتم الصوت', muteOff:'تشغيل الصوت', langLabel:'التبديل إلى الإنجليزية', langBtn:'English',
     title1:'تحدي', title2:'محطة الصيانة',
@@ -709,17 +760,9 @@ const I18N = {
     tier_driver:'سائق', tier_racer:'متسابق', tier_champion:'بطل',
     tag_driver:'وقفة جيدة. أعد المحاولة لتحسين زمنك.', tag_racer:'أيدٍ سريعة. وقفة قوية بمستوى السباقات.', tag_champion:'أداء رائع. زمن يستحق الصدارة.',
     rankLine:'المركز {n} من {m} اليوم', dnfNote:'انتهى الوقت. لا تدخل هذه الجولة في الترتيب.',
-    leadTitle:'هل تود أن نتواصل معك؟', leadSub:'اختياري. زمنك محتسب في كل الأحوال.',
-    fName:'الاسم', fPhone:'رقم الهاتف', fInterest:'مهتم بـ:',
-    int_accounts:'الحسابات', int_financing:'التمويل', int_cards:'البطاقات',
-    consent:'أوافق على أن يتواصل معي {sponsor} عبر هذه البيانات بخصوص المنتجات التي اخترتها.',
-    privacy:'تُحفظ على هذا الجهاز فقط لمتابعة الفعالية. قد يظهر اسمك الأول في لائحة اليوم.',
-    save:'احفظ بياناتي', skip:'تخطَّ',
-    errName:'أدخل اسمك (حرفان على الأقل).', errPhone:'أدخل رقم هاتف صحيحًا (من 8 إلى 15 رقمًا).',
-    errConsent:'ضع علامة الموافقة قبل الحفظ.', errSave:'تعذّر الحفظ على هذا الجهاز.',
-    saved:'تم الحفظ. شكرًا لك.', boardTitle:'لائحة اليوم', again:'العب مجددًا', resetIn:'العودة إلى البداية خلال {s} ث',
-    admTitle:'الإدارة', admLeads:'تصدير العملاء المحتملين (CSV)', admScores:'تصدير الأزمنة (CSV)', admClear:'مسح كل البيانات',
-    admConfirm:'اضغط مرة أخرى للتأكيد', admClose:'إغلاق', admStats:'{l} عميل محتمل، {s} زمن', admCleared:'تم مسح البيانات.', admNone:'لا توجد بيانات للتصدير بعد.',
+    fName:'الاسم', errName:'أدخل اسمك (حرفان على الأقل).', boardTitle:'لائحة اليوم', again:'العب مجددًا', resetIn:'العودة إلى البداية خلال {s} ث',
+    admTitle:'الإدارة', admScores:'تصدير الأزمنة (CSV)', admClear:'مسح كل البيانات',
+    admConfirm:'اضغط مرة أخرى للتأكيد', admClose:'إغلاق', admStats:'{s} زمن', admCleared:'تم مسح البيانات.', admNone:'لا توجد بيانات للتصدير بعد.',
     w_fl:'العجلة الأمامية اليسرى', w_fr:'العجلة الأمامية اليمنى', w_rr:'العجلة الخلفية اليمنى', w_rl:'العجلة الخلفية اليسرى'
   }
 };
@@ -746,6 +789,7 @@ const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 
 const pad = n => String(n).padStart(2, '0');
 const dayKey = (d = new Date()) => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
 const firstName = n => String(n || '').trim().split(/\s+/)[0].slice(0, 18);
+const cleanName = raw => { const n = firstName(raw); return n.length >= 2 ? n : ''; };
 const tierOf = ms => { const s = ms / 1000; return s <= CONFIG.tiers.champion ? 'champion' : s <= CONFIG.tiers.racer ? 'racer' : 'driver'; };
 const cancelAnims = el => { if (el && el.getAnimations) el.getAnimations().forEach(a => a.cancel()); };
 const wc = (el, on) => { if (el) el.style.willChange = on ? 'transform' : ''; };
@@ -846,7 +890,7 @@ function loadDB() {
 function saveDB() { try { localStorage.setItem(CONFIG.storageKey, JSON.stringify(DB)); return true; } catch (e) { return false; } }
 let DB = loadDB();
 const session = { rounds: [] };      // anonymous, in memory only
-let lastRound = null;
+let lastRound = null, playerName = '', nameAct = 0;
 
 function allScores() {
   const map = new Map();
@@ -860,10 +904,10 @@ const todayBoard = () => { const d = dayKey(); return allScores().filter(s => s.
    BUILD STATIC MARKUP (car, wheels, lamps, pips, chips)
    ===================================================================== */
 const WHEELS = [
-  { cx: 116, cy: 150, dir: -1, key: 'w_fl' },
-  { cx: 244, cy: 150, dir:  1, key: 'w_fr' },
-  { cx: 248, cy: 372, dir:  1, key: 'w_rr' },
-  { cx: 112, cy: 372, dir: -1, key: 'w_rl' }
+  { cx: 130, cy: 130, dir: -1, key: 'w_fl' },
+  { cx: 231, cy: 130, dir:  1, key: 'w_fr' },
+  { cx: 224, cy: 346, dir:  1, key: 'w_rr' },
+  { cx: 135, cy: 346, dir: -1, key: 'w_rl' }
 ];
 const spokes = cls => { let p = ''; for (let k = 0; k < 5; k++) { const a = (k * 72 - 90) * Math.PI / 180; p += 'M' + (10 * Math.cos(a)).toFixed(1) + ' ' + (10 * Math.sin(a)).toFixed(1) + 'L' + (30 * Math.cos(a)).toFixed(1) + ' ' + (30 * Math.sin(a)).toFixed(1); } return '<path class="' + cls + '" d="' + p + '"/>'; };
 const HEX = (() => { const p = []; for (let k = 0; k < 6; k++) { const a = k * 60 * Math.PI / 180; p.push((9 * Math.cos(a)).toFixed(1) + ',' + (9 * Math.sin(a)).toFixed(1)); } return p.join(' '); })();
@@ -875,66 +919,43 @@ const wheelSVG = dir => `<svg viewBox="-55 -55 110 110" aria-hidden="true" focus
 <g class="floor-tyre"><circle class="fl-tyre" r="33"/><circle class="fl-rim" r="20"/><circle class="fl-band" r="20"/><path class="fl-spk" d="M0 -17V17M-17 0H17M-12 -12L12 12M12 -12L-12 12"/><circle class="fl-hub" r="5"/><path class="fl-hi" d="M-25 -17A30 30 0 0 1 -8 -29"/></g></g>
 </g>
 <g class="w-new"><rect class="tyre-n" x="-33" y="-50" width="66" height="100" rx="14"/><g clip-path="url(#tyClip)"><path class="tread" d="M-18 -70V70M0 -70V70M18 -70V70" stroke-dasharray="10 10"/></g><rect class="band" x="-33" y="-50" width="66" height="12" rx="6"/><rect class="band" x="-33" y="38" width="66" height="12" rx="6"/><rect class="rim-n" x="-15" y="-15" width="30" height="30" rx="10"/></g>
-<g class="mir" transform="scale(${dir < 0 ? 1 : -1} 1)"><g class="crew"><g class="held"><rect x="33" y="-30" width="15" height="60" rx="6"/><rect class="hb" x="33" y="-30" width="15" height="10" rx="5"/></g>
+<g class="mir" transform="scale(${dir < 0 ? 1.6 : -1.6} 1.6)"><g class="crew"><g class="held"><rect x="33" y="-30" width="15" height="60" rx="6"/><rect class="hb" x="33" y="-30" width="15" height="10" rx="5"/></g>
 <rect class="c-arm" x="2" y="-28" width="30" height="9" rx="4.5"/><rect class="c-arm" x="2" y="19" width="30" height="9" rx="4.5"/>
 <ellipse class="c-suit" rx="11" ry="26"/><path class="c-str" d="M-4 -23Q0 0 -4 23"/>
 <circle class="c-glove" cx="32" cy="-23.5" r="5"/><circle class="c-glove" cx="32" cy="23.5" r="5"/>
-<circle class="c-helm" cx="1" r="12.5"/><path class="c-visor" d="M5 -8Q12 0 5 8Z"/></g></g>
+<circle class="c-helm" cx="1" r="12.5"/><rect class="c-band" x="-2.5" y="-14.5" width="5" height="29" rx="2.5"/></g></g></g>
 <g class="w-nut"><circle class="nut-glow" r="22"/><polygon class="nut" points="${HEX}"/><circle class="nut-c" r="3.2"/></g>
 <g class="w-check"><circle cx="30" cy="-40" r="16"/><path d="M22 -40l6 6 11-12"/></g></svg>`;
 
-const PITBOX = `<svg class="pitbox" viewBox="0 0 360 520" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-<rect x="8" y="14" width="344" height="492" rx="26" fill="rgba(255,255,255,.02)" stroke="rgba(236,243,240,.12)" stroke-width="1.5" stroke-dasharray="3 9"/>
-<g fill="none" style="stroke:var(--accent2)" stroke-width="3" stroke-linecap="round" opacity=".55">
-<path d="M8 52V30a16 16 0 0 1 16-16h28"/><path d="M352 52V30a16 16 0 0 0-16-16h-28"/><path d="M8 468v22a16 16 0 0 0 16 16h28"/><path d="M352 468v22a16 16 0 0 1-16 16h-28"/></g></svg>`;
-
-const CAR_BODY = `<svg class="car-body" viewBox="0 0 360 520" aria-hidden="true" focusable="false">
-<!-- flat ground shadow -->
-<g fill="#000" opacity=".16" transform="translate(-10 12)"><rect x="100" y="38" width="160" height="40" rx="4"/><rect x="100" y="462" width="160" height="40" rx="4"/><path d="M180 84L194 150Q226 196 238 240Q244 276 224 320L198 340V456H162V340L136 320Q116 276 122 240Q134 196 166 150Z"/></g>
-<!-- axles + wishbones -->
-<g stroke="#4b5163" stroke-linecap="round" fill="none"><path d="M116 150H244" stroke-width="9"/><path d="M112 372H248" stroke-width="9"/>
-<path d="M116 150L170 122M116 150L170 182M244 150L190 122M244 150L190 182M112 372L166 346M112 372L166 398M248 372L194 346M248 372L194 398" stroke-width="4" stroke="#6b7388"/></g>
-<!-- front wing -->
-<rect x="102" y="38" width="156" height="40" rx="4" fill="#f2643b"/>
-<rect x="110" y="46" width="140" height="6" rx="3" fill="#fff" opacity=".85"/>
-<rect x="110" y="62" width="140" height="8" rx="3" fill="#d4502a"/>
-<rect x="94" y="32" width="12" height="52" rx="4" fill="#14224f"/><rect x="254" y="32" width="12" height="52" rx="4" fill="#14224f"/>
-<!-- body: nose, flared cowl, engine cover -->
-<path d="M180 84L194 150Q226 196 238 240Q244 276 224 320L198 340V456H162V340L136 320Q116 276 122 240Q134 196 166 150Z" fill="#1b2d63"/>
-<path d="M180 84L194 150L198 190H162L166 150Z" fill="#f2643b"/>
-<path d="M180 92L186 150L184 196H176L174 150Z" fill="#ff9a73"/>
-<path d="M150 196Q130 232 138 276" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" opacity=".85"/>
-<path d="M210 196Q230 232 222 276" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" opacity=".85"/>
-<path d="M170 196Q180 188 190 196" fill="none" stroke="#2e4690" stroke-width="3"/>
-<!-- cockpit + helmet + halo -->
-<ellipse cx="180" cy="262" rx="22" ry="38" fill="#0b1330"/>
-<circle cx="180" cy="266" r="14" fill="#ff8a62"/>
-<path d="M172 262Q180 256 188 262V268Q180 272 172 268Z" fill="#0b1330"/>
-<circle cx="175" cy="259" r="3.2" fill="#fff" opacity=".8"/>
-<path d="M158 252Q158 224 180 220Q202 224 202 252" fill="none" stroke="#0b1330" stroke-width="7" stroke-linecap="round"/>
-<path d="M180 220V234" stroke="#0b1330" stroke-width="6" stroke-linecap="round"/>
-<!-- engine intake grid + stripes -->
-<rect x="162" y="344" width="36" height="62" rx="7" fill="#0b1330"/>
-<g fill="#4b5163"><circle cx="171" cy="356" r="5"/><circle cx="189" cy="356" r="5"/><circle cx="171" cy="371" r="5"/><circle cx="189" cy="371" r="5"/><circle cx="171" cy="386" r="5"/><circle cx="189" cy="386" r="5"/><circle cx="171" cy="400" r="0"/></g>
-<g fill="none" stroke="#f2643b" stroke-width="5" stroke-linecap="round"><path d="M164 330V456M196 330V456"/></g>
-<rect x="170" y="412" width="20" height="40" rx="6" fill="#f2643b"/>
-<!-- rear wing -->
-<rect x="100" y="462" width="160" height="40" rx="4" fill="#f2643b"/>
-<rect x="108" y="470" width="144" height="6" rx="3" fill="#fff" opacity=".85"/>
-<rect x="108" y="486" width="144" height="8" rx="3" fill="#d4502a"/>
-<rect x="92" y="456" width="12" height="52" rx="4" fill="#14224f"/><rect x="256" y="456" width="12" height="52" rx="4" fill="#14224f"/>
+const PITBOX = `<svg class="pitbox" viewBox="0 0 360 447" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+<path d="M96 30H265V420H96Z" stroke="#f1f1f1" stroke-width="6" stroke-linejoin="round" fill="none"/>
 </svg>`;
+
+const CAR_BODY = `<svg class="car-body" viewBox="0 0 360 447" aria-hidden="true" focusable="false">
+<g transform="matrix(0 -.4663 .4663 0 0 446.7)">
+<path d="M200 332L520 308L640 352V420L520 484L200 462Z" fill="#000" opacity=".12" transform="translate(10 12)"/>
+<path d="M96 312H110V462H96Z" fill="#26262a"/>
+<path d="M110 322H190V386H110ZM110 392H190V452H110Z" fill="#f4f4f4"/>
+<path d="M96 322H190M96 452H190" stroke="#26262a" stroke-width="6"/>
+<path d="M214 300L206 262M240 300L248 262M214 480L206 518M240 480L248 518M612 352L664 290M612 352L694 300M612 420L664 486M612 420L694 482M612 386H668" stroke="#1d1d20" stroke-width="9" stroke-linecap="round" fill="none"/>
+<path d="M186 300L270 290H510L560 322L640 346V426L560 470L510 496H270L186 482Z" fill="#26262a"/>
+<path d="M730 238H842L868 385L842 536H730L776 502Q752 478 782 450L764 388L782 322Q752 294 730 238Z" fill="#26262a"/><path d="M836 252L858 385L836 522" stroke="#55555b" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M700 345H726V430H700Z" fill="#26262a"/>
+<path d="M195 372L235 338L335 300L450 290L505 300L545 332L600 364L702 372L832 368L860 386L832 404L702 408L600 412L545 446L505 480L450 494L335 484L235 432L195 402Z" fill="#d9402c"/>
+<path d="M232 430L400 305H452L292 452Z" fill="#fff" opacity=".14"/><path d="M560 380H820V392H560Z" fill="#fff" opacity=".12"/>
+<ellipse cx="440" cy="395" rx="62" ry="42" fill="#1b1b1e"/><ellipse cx="445" cy="395" rx="42" ry="29" fill="#f1f1f1"/><ellipse cx="418" cy="395" rx="22" ry="21" fill="#e8a64c"/><path d="M405 386H432M405 404H432" stroke="#6b4a5a" stroke-width="4"/>
+</g></svg>`;
 
 function carHTML(interactive) {
   const tag = interactive ? 'button type="button"' : 'div', end = interactive ? 'button' : 'div';
   return CAR_BODY + WHEELS.map((w, i) =>
-    `<${tag} class="wheel ${w.dir < 0 ? 'wl' : 'wr'}" data-w="${i}" data-s="idle" style="left:${((w.cx - 50) / 3.6).toFixed(2)}%;top:${((w.cy - 50) / 5.2).toFixed(2)}%;--out:${w.dir * 40}px;--k:${i}">${wheelSVG(w.dir)}</${end}>`).join('');
+    `<${tag} class="wheel ${w.dir < 0 ? 'wl' : 'wr'}" data-w="${i}" data-s="idle" style="left:${((w.cx - 36) / 3.6).toFixed(2)}%;top:${((w.cy - 36) / 4.47).toFixed(2)}%;--out:${w.dir * 40}px;--k:${i}">${wheelSVG(w.dir)}</${end}>`).join('');
 }
 const chev = n => { const h = 12 + (n - 1) * 11, top = (48 - h) / 2; let p = ''; for (let i = 0; i < n; i++) { const y = top + 12 + i * 11; p += `<path d="M10 ${y}L24 ${y - 12}L38 ${y}"/>`; } return `<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">${p}</svg>`; };
 
 /* element refs (filled by build) */
 let screens, carWrap, camera, stageWheels, heroLamps, lamps, gantry, cdEl, bannerEl, bannerTxt, flashEl, streaks, timerEl, timerVal, penEl, penTxt, pipEls,
-    promptEl, goBtn, goSub, goMain, tierEl, resScroll, leadForm, boardEl, resetNote, adminEl, liveEl, btnMute, btnLang;
+    promptEl, goBtn, goSub, goMain, tierEl, resScroll, boardEl, resetNote, adminEl, liveEl, btnMute, btnLang;
 
 function build() {
   $('#heroGantry').innerHTML = '<span class="lamp"></span>'.repeat(5);
@@ -946,13 +967,11 @@ function build() {
   carWrap = $('#carWrap'); stageWheels = $$('#carWrap .wheel');
   $('#pips').innerHTML = [1, 2, 3, 4].map(n => `<span class="pip" data-s="todo"><b>${n}</b><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>`).join('');
   pipEls = $$('.pip');
-  $('#chips').innerHTML = CONFIG.interests.map(k =>
-    `<label class="chip"><input type="checkbox" value="${k}"><span class="pill"><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#04130c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span data-i="int_${k}"></span></span></label>`).join('');
   screens = { start: $('#sStart'), game: $('#sGame'), result: $('#sResult') };
   cdEl = $('#cd'); bannerEl = $('#banner'); bannerTxt = $('#bannerTxt'); flashEl = $('#flash'); streaks = $('#streaks');
   timerEl = $('#timer'); timerVal = $('#tVal'); penEl = $('#pen'); penTxt = $('#penTxt');
   promptEl = $('#prompt'); goBtn = $('#btnGo'); goSub = $('#goSub'); goMain = $('#goMain');
-  tierEl = $('#tier'); resScroll = $('#resScroll'); leadForm = $('#lead'); boardEl = $('#board'); resetNote = $('#resetNote');
+  tierEl = $('#tier'); resScroll = $('#resScroll'); boardEl = $('#board'); resetNote = $('#resetNote');
   adminEl = $('#admin'); liveEl = $('#live'); btnMute = $('#btnMute'); btnLang = $('#btnLang');
   const slot = $('#logoSlot');
   if (!CONFIG.showLogoSlot && !CONFIG.logoSVG) slot.hidden = true;
@@ -978,8 +997,6 @@ function applyLang() {
   $('#t1').textContent = t('title1'); $('#t2').textContent = t('title2');
   $('#eventLine').textContent = loc(CONFIG.eventName);
   $('#prizeTxt').textContent = loc(CONFIG.prizeText);
-  $('#consentText').textContent = t('consent', { sponsor: sponsor() });
-  $('#privacy').textContent = t('privacy');
   $('#langTxt').textContent = t('langBtn'); btnLang.setAttribute('aria-label', t('langLabel'));
   $$('.unit').forEach(e => { e.textContent = t('unit'); });
   screens.game.setAttribute('aria-label', t('title1') + ' ' + t('title2'));
@@ -988,10 +1005,11 @@ function applyLang() {
   goMain.textContent = t('go');
   goSub.textContent = G.lightsOut ? t('goNow') : t('goWait');
   if (promptKey) promptEl.textContent = t(promptKey);
-  const fe = $('#formErr'); if (fe.dataset.k) fe.textContent = t(fe.dataset.k);
+  $('#playerName').placeholder = t('namePh');
+  const nm = $('#nameMsg'); if (nm.dataset.k) nm.textContent = t(nm.dataset.k);
   setPenChip();
   renderBoard($('#top5List'), CONFIG.leaderboardSize, null);
-  if (cur === 'result') { renderResultTexts(); if (!boardEl.hidden) renderBoard($('#boardList'), CONFIG.leaderboardSize, lastRound && !lastRound.dnf ? lastRound.id : null); }
+  if (cur === 'result') { renderResultTexts(); renderBoard($('#boardList'), CONFIG.leaderboardSize, lastRound && !lastRound.dnf ? lastRound.id : null); }
   if (adminEl.classList.contains('open')) adminStats();
 }
 function setMuteUI() { btnMute.setAttribute('aria-pressed', String(muted)); btnMute.setAttribute('aria-label', t(muted ? 'muteOff' : 'muteOn')); }
@@ -1078,9 +1096,9 @@ function beginCountdown() {
   later(2400, () => { cdStep(t('cdGo'), 3); startService(); });
 }
 function cdStep(txt, i) {
-  cdEl.textContent = txt; cdEl.className = 'cd show' + (i === 3 ? ' go' : '');
+  cdEl.textContent = txt; cdEl.className = 'cd show' + (i === 3 ? ' cdgo' : '');
   anim(cdEl, [{ transform: 'scale(1.55)', opacity: 0 }, { transform: 'scale(1)', opacity: 1, offset: .35 }, { transform: 'scale(1)', opacity: 1 }], { duration: i === 3 ? 450 : 650, easing: E_SPRING });
-  if (i === 3) { SFX.go(); vib(18); later(520, () => { cdEl.className = 'cd'; }); } else { SFX.beep(i); vib(8); }
+  if (i === 3) { SFX.go(); vib(18); anim(flashEl, [{ opacity: 0 }, { opacity: .7, offset: .15 }, { opacity: 0 }], { duration: 420 }); later(520, () => { cdEl.className = 'cd'; }); } else { SFX.beep(i); vib(8); }
 }
 
 /* ---- b. SERVICE ---- */
@@ -1093,6 +1111,11 @@ function startService() {
 function activateWheel(i) {
   const w = stageWheels[i]; w.dataset.s = 'loosen'; w.classList.add('active'); setPips(G.idx); setPrompt('pLoosen');
   say(t('sayWheel', { n: G.idx + 1 }) + ' ' + t('pLoosen'));
+}
+/* whole-stage kick so each wheel finishing lands with weight; the 4th is bigger */
+function punch(k) {
+  if (RM.matches) return;
+  anim(camera, [{ transform: 'scale(1)' }, { transform: 'scale(' + k + ')', offset: .22 }, { transform: 'scale(1)' }], { duration: 380, easing: E_OUT });
 }
 function ripple(el) {
   const r = document.createElement('span'); r.className = 'ripple'; el.appendChild(r);
@@ -1136,6 +1159,7 @@ function wheelDown(e) {
     w.dataset.s = 'tighten'; SFX.loosen(); vib(12); setPrompt('pTighten'); say(t('pTighten'));
   } else {
     w.dataset.s = 'done'; w.classList.remove('active'); SFX.tighten(); SFX.wheelDone(); vib([10, 24, 16]);
+    punch(G.idx === 3 ? 1.035 : 1.014);
     G.idx++;
     if (G.idx < 4) activateWheel(G.order[G.idx]); else { setPips(4); finishService(); }
   }
@@ -1178,6 +1202,7 @@ function goDown(e) {
   wc(carWrap, true); wc(streaks, true);
   anim(carWrap, [{ transform: 'translateY(0) scale(1)' }, { transform: 'translateY(3%) scale(.99)', offset: .14 }, { transform: 'translateY(-150%) scale(1.04)' }], { duration: RM.matches ? 1 : 1050, delay: 60, easing: 'cubic-bezier(.5,0,.85,.3)', fill: 'forwards' });
   anim(streaks, [{ opacity: 0, transform: 'translateY(-12%)' }, { opacity: .9, transform: 'translateY(2%)', offset: .35 }, { opacity: 0, transform: 'translateY(14%)' }], { duration: 800, delay: 120, easing: 'linear' });
+  if (!RM.matches) anim(camera, [{ transform: 'scale(1)' }, { transform: 'scale(1.07)' }], { duration: 1100, delay: 60, easing: E_IN });
   later(220, () => SFX.whoosh());
   recordRound(false); later(1700, showResult);
 }
@@ -1189,7 +1214,8 @@ function timeUp() {
 }
 function recordRound(dnf) {
   const r = { id: uid(), ts: Date.now(), day: dayKey(), dnf, serviceMs: G.serviceMs, reactionMs: dnf ? null : G.reactionMs, penMs: G.penMs,
-    timeMs: dnf ? null : G.totalMs, tier: dnf ? 'driver' : tierOf(G.totalMs), lang };
+    timeMs: dnf ? null : G.totalMs, tier: dnf ? 'driver' : tierOf(G.totalMs), lang, name: playerName };
+  if (!dnf) { DB.scores.push({ id: r.id, ts: r.ts, day: r.day, name: r.name, timeMs: r.timeMs, tier: r.tier }); if (DB.scores.length > 3000) DB.scores.shift(); saveDB(); }
   session.rounds.push(r); if (session.rounds.length > 3000) session.rounds.shift(); lastRound = r;
 }
 
@@ -1211,14 +1237,10 @@ function renderResultTexts() {
   $('#bRe').textContent = r.dnf ? '--' : fmt(r.reactionMs) + u;
   $('#bPe').textContent = '+' + (r.penMs / 1000).toFixed(1) + u;
 }
-function resetLeadForm() {
-  leadForm.reset(); $('#formErr').textContent = ''; delete $('#formErr').dataset.k;
-  $('#fName').removeAttribute('aria-invalid'); $('#fPhone').removeAttribute('aria-invalid');
-}
 function showResult() {
-  show('result'); lastAct = performance.now(); resetLeadForm();
-  leadForm.hidden = false; boardEl.hidden = true; resScroll.scrollTop = 0;
+  show('result'); lastAct = performance.now(); resScroll.scrollTop = 0;
   tierEl.classList.remove('show'); renderResultTexts();
+  renderBoard($('#boardList'), CONFIG.leaderboardSize, lastRound && !lastRound.dnf ? lastRound.id : null);
   const r = lastRound; rTime().textContent = r.dnf ? '--.---' : '0.000';
   const h = $('#rTitle'); if (h && h.focus) h.focus({ preventScroll: true });
   later(480, () => {
@@ -1228,47 +1250,17 @@ function showResult() {
 }
 function revealTier() { tierEl.classList.add('show'); SFX.tier(lastRound.tier); vib(lastRound.tier === 'champion' ? [20, 40, 20, 40, 70] : [18]); }
 
-function showBoard(msg) {
-  const swap = () => {
-    leadForm.hidden = true; boardEl.hidden = false;
-    const sn = $('#savedNote'); sn.hidden = !msg; sn.textContent = msg || '';
-    renderBoard($('#boardList'), CONFIG.leaderboardSize, lastRound && !lastRound.dnf ? lastRound.id : null);
-    resScroll.scrollTop = 0;
-    anim(boardEl, [{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'none' }], { duration: 360, easing: E_OUT });
-  };
-  const a = anim(leadForm, [{ opacity: 1 }, { opacity: 0 }], { duration: 160, fill: 'forwards' });
-  if (a) a.onfinish = () => { swap(); a.cancel(); }; else swap();
-}
 
 function goStart() {
-  Q.length = 0; countAnim = null; resetLeadForm(); G = newG(); G.state = 'start';
+  Q.length = 0; countAnim = null; playerName = ''; $('#playerName').value = ''; G = newG(); G.state = 'start';
   show('start'); renderBoard($('#top5List'), CONFIG.leaderboardSize, null);
   resetNote.classList.remove('on'); adminOpen && closeAdmin();
 }
 
 /* lead form */
-function bindLead() {
-  leadForm.addEventListener('submit', e => {
-    e.preventDefault();
-    const fName = $('#fName'), fPhone = $('#fPhone'), fConsent = $('#fConsent'), fe = $('#formErr');
-    const name = fName.value.trim().replace(/\s+/g, ' '), phone = fPhone.value.trim(), digits = phone.replace(/\D/g, '');
-    fName.removeAttribute('aria-invalid'); fPhone.removeAttribute('aria-invalid');
-    let err = '', f = null;
-    if (name.length < 2) { err = 'errName'; f = fName; fName.setAttribute('aria-invalid', 'true'); }
-    else if (!/^\+?[\d\s\-().]{7,20}$/.test(phone) || digits.length < 8 || digits.length > 15) { err = 'errPhone'; f = fPhone; fPhone.setAttribute('aria-invalid', 'true'); }
-    else if (!fConsent.checked) { err = 'errConsent'; f = fConsent; }
-    if (err) { fe.dataset.k = err; fe.textContent = t(err); SFX.buzz(); vib([30, 40, 30]); f.focus(); return; }
-    const r = lastRound; if (!r) return;
-    const interests = $$('#chips input:checked').map(i => i.value);
-    const rec = { id: r.id, ts: Date.now(), day: r.day, name, phone, interests, consent: true, consentTs: new Date().toISOString(), timeMs: r.timeMs, tier: r.tier, lang };
-    DB.leads.push(rec);
-    let sc = null; if (r.timeMs != null) { sc = { id: r.id, ts: r.ts, day: r.day, name: firstName(name), timeMs: r.timeMs, tier: r.tier }; DB.scores.push(sc); }
-    if (!saveDB()) { DB.leads.pop(); if (sc) DB.scores.pop(); fe.dataset.k = 'errSave'; fe.textContent = t('errSave'); SFX.buzz(); return; }
-    delete fe.dataset.k; fe.textContent = ''; SFX.wheelDone(); vib([14, 24, 14]);
-    showBoard(t('saved'));
-  });
-  onTap($('#btnSkip'), () => { SFX.tick(); showBoard(''); });
+function bindResult() {
   onTap($('#btnAgain'), () => { SFX.tick(); startRound(); });
+  onTap($('#btnNext'), () => { SFX.tick(); goStart(); });
 }
 
 /* =====================================================================
@@ -1282,7 +1274,7 @@ function download(name, text) {
   const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 5000);
 }
-function adminStats() { $('#admStats').textContent = t('admStats', { l: DB.leads.length, s: allScores().length }); }
+function adminStats() { $('#admStats').textContent = t('admStats', { s: allScores().length }); }
 function openAdmin() {
   adminOpen = true; adminEl.classList.add('open'); adminEl.setAttribute('aria-hidden', 'false'); adminStats(); $('#admMsg').textContent = '';
   vib([30, 40, 30]); setTimeout(() => $('#admClose').focus(), 50);
@@ -1295,11 +1287,6 @@ function bindAdmin() {
   wm.addEventListener('pointerdown', () => { if (cur !== 'start' && cur !== 'result') return; stop(); hold = setTimeout(openAdmin, CONFIG.adminHoldMs); });
   ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => wm.addEventListener(ev, stop));
   onTap($('#admClose'), closeAdmin);
-  onTap($('#admLeads'), () => {
-    if (!DB.leads.length) { $('#admMsg').textContent = t('admNone'); return; }
-    const head = ['id', 'timestamp', 'date', 'name', 'phone', 'interests', 'consent', 'consent_timestamp', 'time_s', 'tier', 'language'];
-    download('pitstop-leads-' + stamp() + '.csv', toCSV([head].concat(DB.leads.map(l => [l.id, new Date(l.ts).toISOString(), l.day, l.name, l.phone, (l.interests || []).join('|'), 'yes', l.consentTs, l.timeMs == null ? '' : (l.timeMs / 1000).toFixed(3), l.tier, l.lang]))));
-  });
   onTap($('#admScores'), () => {
     const list = allScores(); if (!list.length) { $('#admMsg').textContent = t('admNone'); return; }
     const head = ['id', 'timestamp', 'date', 'time_s', 'tier', 'first_name', 'consented', 'dnf'];
@@ -1361,6 +1348,8 @@ function gameTick(now) {
   }
 }
 function idleTick(now) {
+  const nameIn = $('#playerName');
+  if (nameIn.value && now - nameAct > CONFIG.kioskResetSeconds * 1000) { nameIn.value = ''; playerName = ''; }
   const ph = now % 7000;
   heroLamps.forEach((l, i) => { const on = ph > 700 + i * 420 && ph < 4700; if (on !== l._on) { l._on = on; l.classList.toggle('on', on); } });
 }
@@ -1382,14 +1371,23 @@ function resultTick(now) {
    ===================================================================== */
 function init() {
   applyTheme(); build();
-  onTap($('#btnStart'), () => { SFX.unlock(); startRound(); });
+  const nameIn = $('#playerName'), nameMsg = $('#nameMsg');
+  const begin = () => {
+    const n = cleanName(nameIn.value);
+    if (!n) { nameMsg.dataset.k = 'errName'; nameMsg.textContent = t('errName'); nameIn.setAttribute('aria-invalid', 'true'); nameIn.focus(); SFX.buzz(); vib([30, 40, 30]); return; }
+    delete nameMsg.dataset.k; nameMsg.textContent = ''; nameIn.removeAttribute('aria-invalid');
+    playerName = n; nameIn.blur(); SFX.unlock(); startRound();
+  };
+  onTap($('#btnStart'), begin);
+  nameIn.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); begin(); } });
+  nameIn.addEventListener('input', () => { nameAct = performance.now(); if (nameMsg.textContent) { delete nameMsg.dataset.k; nameMsg.textContent = ''; nameIn.removeAttribute('aria-invalid'); } });
   onTap(btnMute, () => { muted = !muted; SFX.setMuted(muted); setMuteUI(); SFX.tick(); vib(8); });
   onTap(btnLang, () => { lang = lang === 'en' ? 'ar' : 'en'; applyLang(); SFX.tick(); vib(8); });
   carWrap.addEventListener('pointerdown', wheelDown);
   carWrap.addEventListener('click', e => { if (e.detail === 0) wheelDown(e); });
   goBtn.addEventListener('pointerdown', goDown);
   goBtn.addEventListener('click', e => { if (e.detail === 0) goDown(e); });
-  bindLead(); bindAdmin(); bindPress();
+  bindResult(); bindAdmin(); bindPress();
   G.state = 'start';
   applyLang(); show('start');
   requestAnimationFrame(frame);
