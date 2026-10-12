@@ -1080,7 +1080,7 @@ function beginCountdown() {
 function cdStep(txt, i) {
   cdEl.textContent = txt; cdEl.className = 'cd show' + (i === 3 ? ' go' : '');
   anim(cdEl, [{ transform: 'scale(1.55)', opacity: 0 }, { transform: 'scale(1)', opacity: 1, offset: .35 }, { transform: 'scale(1)', opacity: 1 }], { duration: i === 3 ? 450 : 650, easing: E_SPRING });
-  if (i === 3) { SFX.go(); vib(18); later(520, () => { cdEl.className = 'cd'; }); } else { SFX.beep(i); vib(8); }
+  if (i === 3) { SFX.go(); vib(18); anim(flashEl, [{ opacity: 0 }, { opacity: .7, offset: .15 }, { opacity: 0 }], { duration: 420 }); later(520, () => { cdEl.className = 'cd'; }); } else { SFX.beep(i); vib(8); }
 }
 
 /* ---- b. SERVICE ---- */
@@ -1093,6 +1093,11 @@ function startService() {
 function activateWheel(i) {
   const w = stageWheels[i]; w.dataset.s = 'loosen'; w.classList.add('active'); setPips(G.idx); setPrompt('pLoosen');
   say(t('sayWheel', { n: G.idx + 1 }) + ' ' + t('pLoosen'));
+}
+/* whole-stage kick so each wheel finishing lands with weight; the 4th is bigger */
+function punch(k) {
+  if (RM.matches) return;
+  anim(camera, [{ transform: 'scale(1)' }, { transform: 'scale(' + k + ')', offset: .22 }, { transform: 'scale(1)' }], { duration: 380, easing: E_OUT });
 }
 function ripple(el) {
   const r = document.createElement('span'); r.className = 'ripple'; el.appendChild(r);
@@ -1136,6 +1141,7 @@ function wheelDown(e) {
     w.dataset.s = 'tighten'; SFX.loosen(); vib(12); setPrompt('pTighten'); say(t('pTighten'));
   } else {
     w.dataset.s = 'done'; w.classList.remove('active'); SFX.tighten(); SFX.wheelDone(); vib([10, 24, 16]);
+    punch(G.idx === 3 ? 1.035 : 1.014);
     G.idx++;
     if (G.idx < 4) activateWheel(G.order[G.idx]); else { setPips(4); finishService(); }
   }
@@ -1178,6 +1184,7 @@ function goDown(e) {
   wc(carWrap, true); wc(streaks, true);
   anim(carWrap, [{ transform: 'translateY(0) scale(1)' }, { transform: 'translateY(3%) scale(.99)', offset: .14 }, { transform: 'translateY(-150%) scale(1.04)' }], { duration: RM.matches ? 1 : 1050, delay: 60, easing: 'cubic-bezier(.5,0,.85,.3)', fill: 'forwards' });
   anim(streaks, [{ opacity: 0, transform: 'translateY(-12%)' }, { opacity: .9, transform: 'translateY(2%)', offset: .35 }, { opacity: 0, transform: 'translateY(14%)' }], { duration: 800, delay: 120, easing: 'linear' });
+  if (!RM.matches) anim(camera, [{ transform: 'scale(1)' }, { transform: 'scale(1.07)' }], { duration: 1100, delay: 60, easing: E_IN });
   later(220, () => SFX.whoosh());
   recordRound(false); later(1700, showResult);
 }
