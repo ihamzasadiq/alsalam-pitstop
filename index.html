@@ -521,6 +521,27 @@ div.wheel{pointer-events:none}
 .board-card .ghost{margin-top:12px;width:100%}
 .name-note{margin-top:8px;font:700 13px/1.35 var(--f-text);color:var(--deep);text-align:center}
 .name-msg{margin-top:4px}
+
+/* start screen: auto margins centre the stack but never clip the top when it overflows */
+#sStart{justify-content:flex-start}
+#sStart>.hero{margin-top:auto}
+#sStart>.top5{margin-bottom:auto}
+#sStart{padding-top:16px}
+/* phones: smaller title and tighter gaps so the name box, Start and the board fit one screen */
+@media (max-width:640px){
+  #sStart{gap:8px}
+  #sStart .title{font-size:clamp(40px,12vw,52px);padding-bottom:4px}
+  #sStart .copy{gap:10px}
+  #sStart .hero{margin-bottom:0}
+  #sStart .hero .gantry{width:min(60vw,240px);padding:8px 12px}
+  #sStart .name-box input{min-height:52px;font-size:20px}
+  #sStart .name-msg{min-height:0;margin-top:0}
+  #sStart .cta .face{min-height:58px}
+  #sStart .prize{padding:7px 14px;font-size:15px}
+  #sStart .top5{padding:12px;margin-top:2px}
+  #sStart .top5 h2{font-size:18px;margin-bottom:6px}
+  #sStart .board li{min-height:36px}
+}
 </style>
 </head>
 
