@@ -409,36 +409,6 @@ div.wheel{pointer-events:none}
 .res-right{display:flex;flex-direction:column}
 
 /* lead card */
-.field{display:block;margin-top:14px}
-.field>span{display:block;font:700 14px/1.2 var(--f-text);color:var(--ink2);margin-bottom:6px}
-.field input{width:100%;min-height:56px;padding:0 16px;border-radius:16px;border:2.5px solid var(--deep);background:#fff;color:var(--deep);font:700 18px/1 var(--f-text);transition:box-shadow .15s}
-.field input:focus{outline:none;box-shadow:0 0 0 4px rgb(var(--accent-rgb) / .45)}
-.field input[aria-invalid=true]{border-color:#B3261E}
-fieldset{border:0;margin-top:16px;min-width:0}
-legend{font:700 14px/1.2 var(--f-text);color:var(--ink2);margin-bottom:8px;padding:0}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{position:relative;display:block}
-.chip input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
-.pill{display:flex;align-items:center;gap:8px;min-height:56px;padding:0 18px;border-radius:28px;border:2.5px solid var(--deep);background:#fff;color:var(--deep);
-  font:800 17px/1 var(--f-text);transition:background .15s,color .15s,transform .35s var(--spring)}
-.tick{width:22px;height:22px;flex:none;border-radius:50%;border:2.5px solid var(--deep);background:#fff;display:grid;place-items:center;transition:background .15s}
-.tick svg{width:13px;height:13px;opacity:0;transform:scale(.4);transition:opacity .12s,transform .3s var(--spring)}
-.chip input:checked + .pill{background:var(--accent);color:#fff}
-.chip input:checked + .pill .tick,.consent input:checked ~ .tick{background:var(--cream)}
-.chip input:checked + .pill .tick svg,.consent input:checked ~ .tick svg{opacity:1;transform:none}
-.chip input:focus-visible + .pill,.consent input:focus-visible ~ .cbg{outline:3px solid var(--deep);outline-offset:3px}
-.chip input:active + .pill{transform:scale(.96)}
-.consent{position:relative;isolation:isolate;display:flex;gap:12px;align-items:flex-start;margin-top:16px;min-height:56px;padding:12px 14px;border-radius:16px;font:600 15px/1.4 var(--f-text)}
-.consent input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;z-index:2}
-.cbg{position:absolute;inset:0;z-index:-1;border-radius:16px;border:2.5px solid var(--deep);background:#fff;transition:background .15s}
-.consent input:checked ~ .cbg{background:rgb(var(--accent-rgb) / .2)}
-.consent .tick{margin-top:1px}
-.privacy{margin-top:10px;font:600 13px/1.4 var(--f-text);color:var(--ink2)}
-.err{min-height:22px;margin-top:8px;font:700 15px/1.3 var(--f-text);color:#8A1C12;display:flex;gap:8px;align-items:flex-start}
-.err:not(:empty)::before{content:"!";flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:#B3261E;color:#fff;font:800 14px/1 var(--f-text)}
-.actions{display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;align-items:center}
-.actions .cta{flex:1 1 180px}
-.saved{margin-bottom:12px;font:800 16px/1.3 var(--f-text);color:var(--accent-d)}
 .board-card h3{margin-bottom:10px}
 .board-card .cta{width:100%;margin-top:18px}
 .reset-note{position:absolute;left:0;right:0;bottom:calc(var(--sb) + 12px);text-align:center;font:800 14px/1.3 var(--f-text);color:var(--deep);opacity:0;pointer-events:none;transition:opacity .3s}
@@ -548,6 +518,8 @@ legend{font:700 14px/1.2 var(--f-text);color:var(--ink2);margin-bottom:8px;paddi
 .name-box input[aria-invalid=true]{border-color:#B3261E}
 .name-msg{min-height:22px;margin-top:10px;font:800 15px/1.3 var(--f-text);color:#fff;text-shadow:0 1px 0 var(--deep),0 -1px 0 var(--deep),1px 0 0 var(--deep),-1px 0 0 var(--deep)}
 .board-card .ghost{margin-top:12px;width:100%}
+.name-note{margin-top:8px;font:700 13px/1.35 var(--f-text);color:var(--deep);text-align:center}
+.name-msg{margin-top:4px}
 </style>
 </head>
 
@@ -633,6 +605,7 @@ legend{font:700 14px/1.2 var(--f-text);color:var(--ink2);margin-bottom:8px;paddi
         <div class="name-box st" style="--i:3">
           <label class="sr" for="playerName" data-i="fName"></label>
           <input id="playerName" type="text" maxlength="24" autocomplete="off" autocapitalize="words" enterkeyhint="go">
+          <p class="name-note" data-i="nameNote"></p>
           <p class="name-msg" id="nameMsg" role="alert"></p>
         </div>
         <button id="btnStart" class="cta idle pressable st" type="button" style="--i:3"><span class="face" data-i="start"></span></button>
@@ -708,7 +681,6 @@ legend{font:700 14px/1.2 var(--f-text);color:var(--ink2);margin-bottom:8px;paddi
   <div class="card adm" role="dialog" aria-modal="true" aria-labelledby="admTitle">
     <h2 id="admTitle" data-i="admTitle"></h2>
     <p id="admStats"></p>
-    <button id="admLeads" class="btn pressable" type="button" data-i="admLeads"></button>
     <button id="admScores" class="btn pressable" type="button" data-i="admScores"></button>
     <button id="admClear" class="btn warn pressable" type="button" data-i="admClear"></button>
     <button id="admClose" class="ghost pressable" type="button" data-i="admClose"></button>
@@ -753,7 +725,7 @@ const CONFIG = {
    ===================================================================== */
 const I18N = {
   en: {
-    concept:'Concept demo', start:'Start', namePh:'Your name', next:'New player', hTime:'Time', hWheels:'Wheels', top5:"Today's top 5", noTimes:'No times yet today. Set the first one.',
+    concept:'Concept demo', start:'Start', namePh:'Your name', nameNote:"Your first name appears on today's leaderboard.", next:'New player', hTime:'Time', hWheels:'Wheels', top5:"Today's top 5", noTimes:'No times yet today. Set the first one.',
     guest:'Guest', you:'You', unit:'s', logo:'Logo',
     muteOn:'Mute sound', muteOff:'Turn sound on', langLabel:'Switch language to Arabic', langBtn:'العربية',
     title1:'Pit Stop', title2:'Challenge',
@@ -767,21 +739,13 @@ const I18N = {
     tier_driver:'Driver', tier_racer:'Racer', tier_champion:'Champion',
     tag_driver:'Solid stop. Go again and cut your time.', tag_racer:'Quick hands. A strong, race-ready stop.', tag_champion:'Flawless pace. A top-of-the-board time.',
     rankLine:'Rank {n} of {m} today', dnfNote:"Time's up. This round isn't ranked.",
-    leadTitle:'Want us to follow up?', leadSub:'Optional. Your time counts either way.',
-    fName:'Name', fPhone:'Phone number', fInterest:'Interested in:',
-    int_accounts:'Accounts', int_financing:'Financing', int_cards:'Cards',
-    consent:'I agree that {sponsor} may contact me on these details about the products I selected.',
-    privacy:"Stored on this device only, for event follow-up. Your first name may appear on today's leaderboard.",
-    save:'Save my details', skip:'Skip',
-    errName:'Enter your name (at least 2 characters).', errPhone:'Enter a valid phone number (8 to 15 digits).',
-    errConsent:'Tick the box to agree before saving.', errSave:"Couldn't save on this device.",
-    saved:'Saved. Thank you.', boardTitle:"Today's leaderboard", again:'Play again', resetIn:'Returning to start in {s} s',
-    admTitle:'Admin', admLeads:'Export leads (CSV)', admScores:'Export scores (CSV)', admClear:'Clear all data',
-    admConfirm:'Tap again to confirm', admClose:'Close', admStats:'{l} leads, {s} scores', admCleared:'Data cleared.', admNone:'Nothing to export yet.',
+    fName:'Name', errName:'Enter your name (at least 2 characters).', boardTitle:"Today's leaderboard", again:'Play again', resetIn:'Returning to start in {s} s',
+    admTitle:'Admin', admScores:'Export scores (CSV)', admClear:'Clear all data',
+    admConfirm:'Tap again to confirm', admClose:'Close', admStats:'{s} scores', admCleared:'Data cleared.', admNone:'Nothing to export yet.',
     w_fl:'Front left wheel', w_fr:'Front right wheel', w_rr:'Rear right wheel', w_rl:'Rear left wheel'
   },
   ar: {
-    concept:'نموذج تجريبي', start:'ابدأ', namePh:'اسمك', next:'لاعب جديد', hTime:'الوقت', hWheels:'العجلات', top5:'أفضل 5 أزمنة اليوم', noTimes:'لا توجد أزمنة اليوم بعد. كن صاحب أول زمن.',
+    concept:'نموذج تجريبي', start:'ابدأ', namePh:'اسمك', nameNote:'يظهر اسمك الأول في لائحة اليوم.', next:'لاعب جديد', hTime:'الوقت', hWheels:'العجلات', top5:'أفضل 5 أزمنة اليوم', noTimes:'لا توجد أزمنة اليوم بعد. كن صاحب أول زمن.',
     guest:'ضيف', you:'أنت', unit:'ث', logo:'الشعار',
     muteOn:'كتم الصوت', muteOff:'تشغيل الصوت', langLabel:'التبديل إلى الإنجليزية', langBtn:'English',
     title1:'تحدي', title2:'محطة الصيانة',
@@ -795,17 +759,9 @@ const I18N = {
     tier_driver:'سائق', tier_racer:'متسابق', tier_champion:'بطل',
     tag_driver:'وقفة جيدة. أعد المحاولة لتحسين زمنك.', tag_racer:'أيدٍ سريعة. وقفة قوية بمستوى السباقات.', tag_champion:'أداء رائع. زمن يستحق الصدارة.',
     rankLine:'المركز {n} من {m} اليوم', dnfNote:'انتهى الوقت. لا تدخل هذه الجولة في الترتيب.',
-    leadTitle:'هل تود أن نتواصل معك؟', leadSub:'اختياري. زمنك محتسب في كل الأحوال.',
-    fName:'الاسم', fPhone:'رقم الهاتف', fInterest:'مهتم بـ:',
-    int_accounts:'الحسابات', int_financing:'التمويل', int_cards:'البطاقات',
-    consent:'أوافق على أن يتواصل معي {sponsor} عبر هذه البيانات بخصوص المنتجات التي اخترتها.',
-    privacy:'تُحفظ على هذا الجهاز فقط لمتابعة الفعالية. قد يظهر اسمك الأول في لائحة اليوم.',
-    save:'احفظ بياناتي', skip:'تخطَّ',
-    errName:'أدخل اسمك (حرفان على الأقل).', errPhone:'أدخل رقم هاتف صحيحًا (من 8 إلى 15 رقمًا).',
-    errConsent:'ضع علامة الموافقة قبل الحفظ.', errSave:'تعذّر الحفظ على هذا الجهاز.',
-    saved:'تم الحفظ. شكرًا لك.', boardTitle:'لائحة اليوم', again:'العب مجددًا', resetIn:'العودة إلى البداية خلال {s} ث',
-    admTitle:'الإدارة', admLeads:'تصدير العملاء المحتملين (CSV)', admScores:'تصدير الأزمنة (CSV)', admClear:'مسح كل البيانات',
-    admConfirm:'اضغط مرة أخرى للتأكيد', admClose:'إغلاق', admStats:'{l} عميل محتمل، {s} زمن', admCleared:'تم مسح البيانات.', admNone:'لا توجد بيانات للتصدير بعد.',
+    fName:'الاسم', errName:'أدخل اسمك (حرفان على الأقل).', boardTitle:'لائحة اليوم', again:'العب مجددًا', resetIn:'العودة إلى البداية خلال {s} ث',
+    admTitle:'الإدارة', admScores:'تصدير الأزمنة (CSV)', admClear:'مسح كل البيانات',
+    admConfirm:'اضغط مرة أخرى للتأكيد', admClose:'إغلاق', admStats:'{s} زمن', admCleared:'تم مسح البيانات.', admNone:'لا توجد بيانات للتصدير بعد.',
     w_fl:'العجلة الأمامية اليسرى', w_fr:'العجلة الأمامية اليمنى', w_rr:'العجلة الخلفية اليمنى', w_rl:'العجلة الخلفية اليسرى'
   }
 };
@@ -832,6 +788,7 @@ const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 
 const pad = n => String(n).padStart(2, '0');
 const dayKey = (d = new Date()) => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
 const firstName = n => String(n || '').trim().split(/\s+/)[0].slice(0, 18);
+const cleanName = raw => { const n = firstName(raw); return n.length >= 2 ? n : ''; };
 const tierOf = ms => { const s = ms / 1000; return s <= CONFIG.tiers.champion ? 'champion' : s <= CONFIG.tiers.racer ? 'racer' : 'driver'; };
 const cancelAnims = el => { if (el && el.getAnimations) el.getAnimations().forEach(a => a.cancel()); };
 const wc = (el, on) => { if (el) el.style.willChange = on ? 'transform' : ''; };
@@ -932,7 +889,7 @@ function loadDB() {
 function saveDB() { try { localStorage.setItem(CONFIG.storageKey, JSON.stringify(DB)); return true; } catch (e) { return false; } }
 let DB = loadDB();
 const session = { rounds: [] };      // anonymous, in memory only
-let lastRound = null, playerName = '';
+let lastRound = null, playerName = '', nameAct = 0;
 
 function allScores() {
   const map = new Map();
@@ -1257,7 +1214,7 @@ function timeUp() {
 function recordRound(dnf) {
   const r = { id: uid(), ts: Date.now(), day: dayKey(), dnf, serviceMs: G.serviceMs, reactionMs: dnf ? null : G.reactionMs, penMs: G.penMs,
     timeMs: dnf ? null : G.totalMs, tier: dnf ? 'driver' : tierOf(G.totalMs), lang, name: playerName };
-  if (!dnf) { DB.scores.push({ id: r.id, ts: r.ts, day: r.day, name: r.name, timeMs: r.timeMs, tier: r.tier }); saveDB(); }
+  if (!dnf) { DB.scores.push({ id: r.id, ts: r.ts, day: r.day, name: r.name, timeMs: r.timeMs, tier: r.tier }); if (DB.scores.length > 3000) DB.scores.shift(); saveDB(); }
   session.rounds.push(r); if (session.rounds.length > 3000) session.rounds.shift(); lastRound = r;
 }
 
@@ -1316,7 +1273,7 @@ function download(name, text) {
   const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 5000);
 }
-function adminStats() { $('#admStats').textContent = t('admStats', { l: DB.leads.length, s: allScores().length }); }
+function adminStats() { $('#admStats').textContent = t('admStats', { s: allScores().length }); }
 function openAdmin() {
   adminOpen = true; adminEl.classList.add('open'); adminEl.setAttribute('aria-hidden', 'false'); adminStats(); $('#admMsg').textContent = '';
   vib([30, 40, 30]); setTimeout(() => $('#admClose').focus(), 50);
@@ -1329,11 +1286,6 @@ function bindAdmin() {
   wm.addEventListener('pointerdown', () => { if (cur !== 'start' && cur !== 'result') return; stop(); hold = setTimeout(openAdmin, CONFIG.adminHoldMs); });
   ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => wm.addEventListener(ev, stop));
   onTap($('#admClose'), closeAdmin);
-  onTap($('#admLeads'), () => {
-    if (!DB.leads.length) { $('#admMsg').textContent = t('admNone'); return; }
-    const head = ['id', 'timestamp', 'date', 'name', 'phone', 'interests', 'consent', 'consent_timestamp', 'time_s', 'tier', 'language'];
-    download('pitstop-leads-' + stamp() + '.csv', toCSV([head].concat(DB.leads.map(l => [l.id, new Date(l.ts).toISOString(), l.day, l.name, l.phone, (l.interests || []).join('|'), 'yes', l.consentTs, l.timeMs == null ? '' : (l.timeMs / 1000).toFixed(3), l.tier, l.lang]))));
-  });
   onTap($('#admScores'), () => {
     const list = allScores(); if (!list.length) { $('#admMsg').textContent = t('admNone'); return; }
     const head = ['id', 'timestamp', 'date', 'time_s', 'tier', 'first_name', 'consented', 'dnf'];
@@ -1395,6 +1347,8 @@ function gameTick(now) {
   }
 }
 function idleTick(now) {
+  const nameIn = $('#playerName');
+  if (nameIn.value && now - nameAct > CONFIG.kioskResetSeconds * 1000) { nameIn.value = ''; playerName = ''; }
   const ph = now % 7000;
   heroLamps.forEach((l, i) => { const on = ph > 700 + i * 420 && ph < 4700; if (on !== l._on) { l._on = on; l.classList.toggle('on', on); } });
 }
@@ -1418,14 +1372,14 @@ function init() {
   applyTheme(); build();
   const nameIn = $('#playerName'), nameMsg = $('#nameMsg');
   const begin = () => {
-    const n = firstName(nameIn.value.replace(/\s+/g, ' '));
-    if (n.length < 2) { nameMsg.dataset.k = 'errName'; nameMsg.textContent = t('errName'); nameIn.setAttribute('aria-invalid', 'true'); nameIn.focus(); SFX.buzz(); vib([30, 40, 30]); return; }
+    const n = cleanName(nameIn.value);
+    if (!n) { nameMsg.dataset.k = 'errName'; nameMsg.textContent = t('errName'); nameIn.setAttribute('aria-invalid', 'true'); nameIn.focus(); SFX.buzz(); vib([30, 40, 30]); return; }
     delete nameMsg.dataset.k; nameMsg.textContent = ''; nameIn.removeAttribute('aria-invalid');
     playerName = n; nameIn.blur(); SFX.unlock(); startRound();
   };
   onTap($('#btnStart'), begin);
-  nameIn.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); begin(); } });
-  nameIn.addEventListener('input', () => { if (nameMsg.textContent) { delete nameMsg.dataset.k; nameMsg.textContent = ''; nameIn.removeAttribute('aria-invalid'); } });
+  nameIn.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); begin(); } });
+  nameIn.addEventListener('input', () => { nameAct = performance.now(); if (nameMsg.textContent) { delete nameMsg.dataset.k; nameMsg.textContent = ''; nameIn.removeAttribute('aria-invalid'); } });
   onTap(btnMute, () => { muted = !muted; SFX.setMuted(muted); setMuteUI(); SFX.tick(); vib(8); });
   onTap(btnLang, () => { lang = lang === 'en' ? 'ar' : 'en'; applyLang(); SFX.tick(); vib(8); });
   carWrap.addEventListener('pointerdown', wheelDown);
