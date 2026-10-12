@@ -342,9 +342,9 @@ div.wheel{pointer-events:none}
   background:radial-gradient(circle at 50% 36%,#fff2c9,#ffc94d 38%,#ff9a00 78%);
   box-shadow:0 0 0 8px rgb(255 176 32 / .18),0 0 60px 10px rgb(255 154 0 / .55)}
 .cd.show{opacity:1;visibility:visible}
-.cd.go{color:#04130c;font-size:clamp(28px,7vmin,54px);background:radial-gradient(circle at 50% 36%,#eafff6,var(--accent2) 60%,var(--accent) 100%);
+.cd.cdgo{color:#04130c;font-size:clamp(28px,7vmin,54px);background:radial-gradient(circle at 50% 36%,#eafff6,var(--accent2) 60%,var(--accent) 100%);
   box-shadow:0 0 0 8px rgb(var(--accent2-rgb) / .22),0 0 60px 10px rgb(var(--accent2-rgb) / .5)}
-@supports (width:1cqw){.cd{font-size:28cqw}.cd.go{font-size:14cqw}}
+@supports (width:1cqw){.cd{font-size:28cqw}.cd.cdgo{font-size:14cqw}}
 .banner{position:absolute;left:0;right:0;top:18%;margin-inline:auto;width:fit-content;max-width:94%;padding:10px 18px;border-radius:16px;z-index:7;
   background:rgb(5 8 7 / .94);border:1.5px solid var(--accent2);font:800 clamp(20px,5vmin,34px)/1.1 var(--f-display);display:flex;align-items:center;gap:10px;opacity:0;pointer-events:none}
 .banner b{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--accent2);color:#04130c;font-size:18px;flex:none}
@@ -356,7 +356,7 @@ div.wheel{pointer-events:none}
 .banner{background:var(--cream);color:var(--deep);border:3px solid var(--deep);box-shadow:0 5px 0 var(--deep);border-radius:18px;padding:10px 16px 11px;white-space:nowrap;font:800 clamp(18px,4.6vmin,30px)/1.1 var(--f-display)}
 .banner b{background:var(--accent);color:#fff;border:2px solid var(--deep);width:28px;height:28px;font:800 18px/1 var(--f-display)}
 .cd{color:var(--deep)}
-.cd.go{color:#fff;text-shadow:0 3px 0 var(--deep)}
+.cd.cdgo{color:#fff;text-shadow:0 3px 0 var(--deep)}
 
 /* footer: coaching bubble during service, GO during launch */
 #foot{position:relative;flex:none;height:clamp(92px,15vh,150px);margin-top:6px}
@@ -975,13 +975,16 @@ const wheelSVG = dir => `<svg viewBox="-55 -55 110 110" aria-hidden="true" focus
 <g class="w-check"><circle cx="30" cy="-40" r="16"/><path d="M22 -40l6 6 11-12"/></g></svg>`;
 
 const PITBOX = `<svg class="pitbox" viewBox="0 0 360 447" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-<g transform="matrix(0 -.4663 .4663 0 0 446.7)">
-<path d="M165 207H820M125 568H790M55 275V500M902 275V500" stroke="#f1f1f1" stroke-width="12" fill="none"/>
-<path d="M70 0C62 70 210 60 250 90C290 120 285 160 268 178M240 640C226 740 420 770 560 735C640 715 700 740 706 772" stroke="#1d1d20" stroke-width="7" stroke-linecap="round" fill="none"/>
-<path d="M785 112L890 190" stroke="#1d1d20" stroke-width="11" stroke-linecap="round"/>
-<ellipse cx="892" cy="196" rx="30" ry="20" transform="rotate(36 892 196)" fill="#f1f1f1"/><ellipse cx="892" cy="196" rx="23" ry="14" transform="rotate(36 892 196)" fill="#d9402c"/>
-<g transform="translate(848 92) rotate(-70)"><path d="M-30 -8Q-62 -30 -92 -12" stroke="#d9402c" stroke-width="20" stroke-linecap="round" fill="none"/><ellipse rx="34" ry="52" fill="#d9402c"/><path d="M-12 -46Q-4 0 -12 46" stroke="#4a4a50" stroke-width="9" fill="none" stroke-linecap="round"/><circle r="38" cx="4" fill="#e14733"/><path d="M-6 -42V42" stroke="#4a4a50" stroke-width="14" stroke-linecap="round"/></g>
-</g></svg>`;
+<path d="M96 30H265V420H96Z" stroke="#f1f1f1" stroke-width="6" stroke-linejoin="round" fill="none"/>
+<path d="M62 -8C62 60 30 84 -8 112M298 455C298 404 330 380 368 356" stroke="#1d1d20" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+<path d="M44 56L88 92" stroke="#1d1d20" stroke-width="3.5" stroke-linecap="round"/>
+<circle cx="93" cy="97" r="11" fill="#d9402c" stroke="#f1f1f1" stroke-width="3"/><path d="M87 97H99" stroke="#f1f1f1" stroke-width="4" stroke-linecap="round"/>
+<path d="M14 60Q22 44 38 46Q52 50 52 62Q50 76 34 78Q18 78 14 60Z" fill="#d9402c"/>
+<path d="M44 66Q60 74 66 78M32 74Q48 86 62 86" stroke="#d9402c" stroke-width="7" stroke-linecap="round" fill="none"/>
+<circle cx="67" cy="79" r="4.5" fill="#4a4a50"/><circle cx="63" cy="87" r="4.5" fill="#4a4a50"/>
+<circle cx="30" cy="62" r="14" fill="#e14733" stroke="#8c231a" stroke-width="1.5"/>
+<path d="M22 54L38 70" stroke="#4a4a50" stroke-width="6" stroke-linecap="round"/>
+</svg>`;
 
 const CAR_BODY = `<svg class="car-body" viewBox="0 0 360 447" aria-hidden="true" focusable="false">
 <g transform="matrix(0 -.4663 .4663 0 0 446.7)">
@@ -1150,7 +1153,7 @@ function beginCountdown() {
   later(2400, () => { cdStep(t('cdGo'), 3); startService(); });
 }
 function cdStep(txt, i) {
-  cdEl.textContent = txt; cdEl.className = 'cd show' + (i === 3 ? ' go' : '');
+  cdEl.textContent = txt; cdEl.className = 'cd show' + (i === 3 ? ' cdgo' : '');
   anim(cdEl, [{ transform: 'scale(1.55)', opacity: 0 }, { transform: 'scale(1)', opacity: 1, offset: .35 }, { transform: 'scale(1)', opacity: 1 }], { duration: i === 3 ? 450 : 650, easing: E_SPRING });
   if (i === 3) { SFX.go(); vib(18); anim(flashEl, [{ opacity: 0 }, { opacity: .7, offset: .15 }, { opacity: 0 }], { duration: 420 }); later(520, () => { cdEl.className = 'cd'; }); } else { SFX.beep(i); vib(8); }
 }
